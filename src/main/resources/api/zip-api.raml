@@ -1,13 +1,14 @@
 #%RAML 1.0
 title: zip-template
 description: It show some examples of working with zip files.
-baseUri: http://localhost:8081/zip
+baseUri: http://localhost:8081/
 
 /zip:
   /compress:
     get:
       displayName: Compress using Mule Compression Module
-      description: 
+      description: |
+        
       responses: 
         200:
           body:
@@ -25,7 +26,12 @@ baseUri: http://localhost:8081/zip
   /archive:
     get:
       displayName: Archive using Mule Compression Module
-      description:
+      description: |
+        ```java
+        {
+          "fileName": "fileContent"
+        }
+        ```
       responses:
         200:
           body:
