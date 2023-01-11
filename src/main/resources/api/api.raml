@@ -1,0 +1,64 @@
+#%RAML 1.0
+title: zip-template
+description: It show some examples of working with zip files.
+baseUri: http://localhost:8081/zip
+
+/zip:
+  /compress:
+    get:
+      displayName: Compress using Mule Compression Module
+      description: 
+      responses: 
+        200:
+          body:
+            application/json:
+
+  /decompress: 
+    get:
+      displayName: Decompress using Mule Compression Module
+      description:
+      responses: 
+        200:
+          body: 
+            application/json:
+
+  /archive:
+    get:
+      displayName: Archive using Mule Compression Module
+      description:
+      responses:
+        200:
+          body:
+            application/json:
+
+  /extract:
+    get:
+      displayName: Archive using Mule Compression Module
+      responses:
+        200:
+          body:
+            application/json:
+
+  /zip:
+    get:
+      displayName: Zip using Java Class
+  
+  /unzip:
+    get:
+      displayName: Unzip using Java Class
+  
+  /append-to-zip:
+    get:
+      displayName: Include Files to existing Zip using Java Class
+  
+  /entries-from-zip:
+    get:
+      displayName: Get List of Entries inside Zip without Unzip using Java Class
+
+/status:
+  displayName: Health Check API
+  get:
+    responses:
+      200:
+        body:
+          application/json:
