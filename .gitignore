@@ -85,6 +85,8 @@ target/
 
 
 
+
+
 #START: mule/.gitignore (github.com)
 # Reference: https://github.com/mulesoft/mule/blob/master/.gitignore
 
@@ -113,7 +115,6 @@ src/main/resources/META-INF/MANIFEST.MF
 /bin/
 
 #END: mule/.gitignore (github.com)
-
 
 
 # ------------------------------------------------------------------------------ #
