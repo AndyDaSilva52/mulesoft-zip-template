@@ -13,7 +13,7 @@
 reports/ # Reports from MUnit
 .settings/org.mulesoft.exportwizardsettings.prefs # Studio Export Wizard
 
-#END: Consultoria
+#END: Consulting
 
 #START: MuleSoft Documentation (docs.mulesoft.com)
 # Reference: https://docs.mulesoft.com/mule-runtime/3.7/preparing-a-gitignore-file
@@ -139,10 +139,10 @@ tmp/**/*
 *.swp
 *~.nib
 local.properties
-.settings/
+#.settings/
 .loadpath
-.project
-.classpath
+#.project
+#.classpath
 
 # External tool builders
 .externalToolBuilders/
