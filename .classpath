@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
+	<classpathentry kind="con" path="MULE_LIB/org.mule.module/mule-java-module/1.2.10"/>
 	<classpathentry kind="con" path="MULE_LIB/com.mulesoft.modules/mule-secure-configuration-property-module/1.2.5"/>
 	<classpathentry kind="con" path="MULE_LIB/org.mule.modules/mule-apikit-module/1.6.1"/>
 	<classpathentry kind="con" path="MULE_LIB/org.mule.modules/mule-compression-module/2.2.1"/>
