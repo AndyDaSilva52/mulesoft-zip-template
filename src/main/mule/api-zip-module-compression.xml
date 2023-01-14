@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:compression="http://www.mulesoft.org/schema/mule/compression" xmlns:file="http://www.mulesoft.org/schema/mule/file"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd
+http://www.mulesoft.org/schema/mule/compression http://www.mulesoft.org/schema/mule/compression/current/mule-compression.xsd">
+	
+	<sub-flow name="api-zip-module-compression-compress-subflow" doc:id="eea1e170-35d7-4f56-b594-0146b8f25866" >
+		<file:read doc:name="Read CSV File" doc:id="bf057183-2c23-4739-82e1-991ccc3fd8b3" config-ref="File_Config_Mule_Home_Data" path='#[modules::app::cPathIn ++ "data.csv"]' outputMimeType="application/csv; streaming=true; ignoreemptyline=true"/>
+		<compression:compress doc:name="Compress using Zip Compressor" doc:id="d5edc5d6-4437-4218-8a78-ef0058201876" >
+			<compression:compressor >
+				<compression:zip-compressor />
+			</compression:compressor>
+		</compression:compress>
+		<file:write doc:name="Write" doc:id="c50d92db-ef6a-43b9-8447-41469a6576d8" config-ref="File_Config_Mule_Home_Data" path="#[modules::app::cPathOut]"/>
+	</sub-flow>
+	
+	
+	<sub-flow name="api-zip-module-compression-decompress-subflow" doc:id="c747aadc-f36f-49cf-bad1-e5881a48829d" >
+		<file:read doc:name="Read Compressed File" doc:id="49c9ec18-b7b4-439a-b7c8-266f7b243969" config-ref="File_Config_Mule_Home_Data" path='#[modules::app::cPathOut ++ "data.zip"]'/>
+		<compression:decompress doc:name="Decompress using Zip Decompressor" doc:id="0102003e-ff29-4c71-b753-b47f86b91710" >
+			<compression:decompressor >
+				<compression:zip-decompressor />
+			</compression:decompressor>
+		</compression:decompress>
+		<file:write doc:name="Write" doc:id="06e2d59b-52e8-47fc-9062-970f3f4df61b" config-ref="File_Config_Mule_Home_Data" path="#[modules::app::cPathOut]"/>
+	</sub-flow>
+	
+	
+</mule>

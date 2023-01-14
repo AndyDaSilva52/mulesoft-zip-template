@@ -8,7 +8,7 @@
 	xsi:schemaLocation="
 http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd">
 	<error-handler
-		name="zip-api-error-global"
+		name="api-zip-error-handler"
 		doc:id="72494c43-a7f1-49bb-94a9-4413c90222e9">
 
 		<on-error-propagate type="APIKIT:BAD_REQUEST">
