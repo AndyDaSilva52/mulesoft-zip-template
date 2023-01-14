@@ -229,7 +229,7 @@ public class ZipUtility {
      * @throws FileNotFoundException
      * @throws IOException
      */
-    public static void zipFiles(List<File> files, File zipFile)
+    private static void zipFiles(List<File> files, File zipFile)
             throws IOException {
         OutputStream os = new BufferedOutputStream(
                 new FileOutputStream(zipFile));
