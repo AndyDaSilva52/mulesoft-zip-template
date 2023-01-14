@@ -44,31 +44,31 @@ output application/json
             </on-error-propagate>
         </error-handler>
     </flow>
-    <flow name="get:\zip\append-to-zip:api-zip-config">
-        <logger level="INFO" message="get:\zip\append-to-zip:api-zip-config" />
+    <flow name="get:\status:api-zip-config">
+        <logger level="INFO" message="get:\status:api-zip-config" />
+    </flow>
+	<flow name="get:\zip\compress:api-zip-config">
+        <logger level="INFO" message="get:\zip\compress:api-zip-config" />
+    </flow>
+	<flow name="get:\zip\decompress:api-zip-config">
+        <logger level="INFO" message="get:\zip\decompress:api-zip-config" />
     </flow>
     <flow name="get:\zip\archive:api-zip-config">
         <logger level="INFO" message="get:\zip\archive:api-zip-config" />
     </flow>
-    <flow name="get:\zip\compress:api-zip-config">
-        <logger level="INFO" message="get:\zip\compress:api-zip-config" />
-    </flow>
-    <flow name="get:\zip\decompress:api-zip-config">
-        <logger level="INFO" message="get:\zip\decompress:api-zip-config" />
-    </flow>
-    <flow name="get:\zip\entries-from-zip:api-zip-config">
-        <logger level="INFO" message="get:\zip\entries-from-zip:api-zip-config" />
-    </flow>
-    <flow name="get:\zip\extract:api-zip-config">
+	<flow name="get:\zip\extract:api-zip-config">
         <logger level="INFO" message="get:\zip\extract:api-zip-config" />
     </flow>
-    <flow name="get:\zip\unzip:api-zip-config">
-        <logger level="INFO" message="get:\zip\unzip:api-zip-config" />
+	<flow name="get:\zip\entries-from-zip:api-zip-config">
+        <logger level="INFO" message="get:\zip\entries-from-zip:api-zip-config" />
     </flow>
     <flow name="get:\zip\zip:api-zip-config">
         <logger level="INFO" message="get:\zip\zip:api-zip-config" />
     </flow>
-    <flow name="get:\status:api-zip-config">
-        <logger level="INFO" message="get:\status:api-zip-config" />
+	<flow name="get:\zip\append-to-zip:api-zip-config">
+        <logger level="INFO" message="get:\zip\append-to-zip:api-zip-config" />
+    </flow>
+	<flow name="get:\zip\unzip:api-zip-config">
+        <logger level="INFO" message="get:\zip\unzip:api-zip-config" />
     </flow>
 </mule>

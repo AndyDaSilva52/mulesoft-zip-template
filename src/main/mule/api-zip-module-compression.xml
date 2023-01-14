@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<mule xmlns:compression="http://www.mulesoft.org/schema/mule/compression" xmlns:file="http://www.mulesoft.org/schema/mule/file"
-	xmlns="http://www.mulesoft.org/schema/mule/core"
-	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:compression="http://www.mulesoft.org/schema/mule/compression"
+	xmlns:file="http://www.mulesoft.org/schema/mule/file"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
 http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd
-http://www.mulesoft.org/schema/mule/compression http://www.mulesoft.org/schema/mule/compression/current/mule-compression.xsd">
+http://www.mulesoft.org/schema/mule/compression http://www.mulesoft.org/schema/mule/compression/current/mule-compression.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
 	
 	<sub-flow name="api-zip-module-compression-compress-subflow" doc:id="eea1e170-35d7-4f56-b594-0146b8f25866" >
 		<file:read doc:name="Read CSV File" doc:id="bf057183-2c23-4739-82e1-991ccc3fd8b3" config-ref="File_Config_Mule_Home_Data" path='#[modules::app::cPathIn ++ "data.csv"]' outputMimeType="application/csv; streaming=true; ignoreemptyline=true"/>
@@ -25,6 +26,51 @@ http://www.mulesoft.org/schema/mule/compression http://www.mulesoft.org/schema/m
 			</compression:decompressor>
 		</compression:decompress>
 		<file:write doc:name="Write" doc:id="06e2d59b-52e8-47fc-9062-970f3f4df61b" config-ref="File_Config_Mule_Home_Data" path="#[modules::app::cPathOut]"/>
+	</sub-flow>
+	<sub-flow name="api-zip-module-compression-archive-subflow" doc:id="4e47dc33-6f01-4694-9272-8d860cb5d662" >
+		<file:list doc:name="List" doc:id="cbb3d441-6bb9-47c7-9623-66cbbc8ce0da" config-ref="File_Config_Mule_Home_Data" directoryPath="#[modules::app::cPathIn]"/>
+		<ee:transform doc:name="Transform Message" doc:id="0c70031b-acf6-4289-9e82-3ab1a3b19438" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/java
+//output application/dw deferred=true //TODO: Possible improvement
+/**
+ * payload = { "fileName": "{fileContent:Binary}" }
+ */
+---
+payload pluck {
+  fileName: '$$',
+  fileContent: $
+}
+]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</sub-flow>
+	<sub-flow name="api-zip-module-compression-extract-subflow" doc:id="75a6b2b9-851c-4d57-93e2-7aa99911e774" >
+		<compression:extract doc:name="Extract" doc:id="ecdd50f2-1f9f-4d81-bf3d-23db1d729706" >
+			<compression:extractor >
+				<compression:zip-extractor />
+			</compression:extractor>
+		</compression:extract>
+		<ee:transform doc:name="Transform Message" doc:id="0f0232f3-8d8c-4ac1-a208-2b60ecb8445f" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/java
+//output application/dw deferred=true //TODO: Possible improvement
+/**
+ * payload = { "fileName": "{fileContent:Binary}" }
+ */
+---
+payload pluck {
+  fileName: '$$',
+  fileContent: $
+}
+]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<foreach doc:name="For Each" doc:id="6e5c371e-448f-4957-a781-bcee6f85c7ec" >
+			<logger level="INFO" doc:name="Logger" doc:id="7b6e53d5-f7e8-4b77-b738-f23d356f655e" />
+		</foreach>
 	</sub-flow>
 	
 	

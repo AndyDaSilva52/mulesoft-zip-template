@@ -1,4 +1,4 @@
-package com.mulesoft;
+package org.mulesoft.common;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -416,7 +416,7 @@ public class ZipUtility {
 
             Enumeration<? extends ZipEntry> entries =
                     zipFile.entries();
-
+            
             // System.out.println("Entries:");
 
             while (entries.hasMoreElements()) {

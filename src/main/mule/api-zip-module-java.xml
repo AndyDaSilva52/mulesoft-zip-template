@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:java="http://www.mulesoft.org/schema/mule/java" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/java http://www.mulesoft.org/schema/mule/java/current/mule-java.xsd">
+	<sub-flow name="api-zip-module-java-entries-subflow" doc:id="ce604326-18a2-4527-9681-56a67d3a4cc3" >
+		<ee:transform doc:name="Set payload /java - Args for Java Class" doc:id="84dd68f0-b350-470b-9218-62c09243fbd8" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/java
+---
+{
+  arg0: "fileZipPath" as String
+}
+]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<java:invoke-static doc:name="Invoke static" doc:id="0cf07f1e-774f-4926-886c-f436be26aeeb" class="org.mulesoft.common.ZipUtility" method="getZipFileList(String)">
+			<java:args ><![CDATA[#[payload]]]></java:args>
+		</java:invoke-static>
+		<ee:transform doc:name="Set payload /json Response" doc:id="f0e4fbf1-9453-4b75-87da-2c84b6fa2fc7" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	transactionID: correlationId,
+	zipFile: "",
+	entries: payload
+}
+]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</sub-flow>
+</mule>
