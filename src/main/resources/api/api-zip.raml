@@ -3,6 +3,30 @@ title: zip-template
 description: It show some examples of working with zip files.
 baseUri: http://localhost:8081/
 
+uses:
+  traits: library/traits.raml
+  #resourceTypes: 
+
+/mule-home:
+  get:
+    displayName: List All Files in Mule Home
+    description:
+    responses:
+      200:
+        body:
+          #application/xml:
+           
+          #application/yaml:
+             
+          application/json:
+            type: array
+            items:
+              type: object
+              properties:
+                path:
+                  type: string
+            
+
 /zip:
   /compress:
     get:
@@ -59,11 +83,20 @@ baseUri: http://localhost:8081/
   
   /entries:
     get:
-      displayName: Get List of Entries inside Zip without Unzip using Java Class
+      is:
+      - traits.query-params-zip
+      
+      displayName: Get List of Entries inside Zip using Java Class (Without Extract)
+      responses:
+        200:
+          body:
+            application/json:
+            
 
 /healthcheck:
   displayName: Health Check API
   get:
+    displayName: Healt Check API
     responses:
       200:
         body:

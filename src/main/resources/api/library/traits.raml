@@ -1,0 +1,13 @@
+#%RAML 1.0 Library
+
+traits:
+  header-x-correlation-id: !include ./traits/header-correlation-id.raml
+  
+  query-params-zip:
+    queryParameters:
+      zip:
+        type: string
+        #displayName:
+        required: true
+        examples:
+          "Example": "example.zip" 
