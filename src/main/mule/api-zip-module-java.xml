@@ -6,18 +6,29 @@
 http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
 http://www.mulesoft.org/schema/mule/java http://www.mulesoft.org/schema/mule/java/current/mule-java.xsd">
 	<sub-flow name="api-zip-module-java-entries-subflow" doc:id="ce604326-18a2-4527-9681-56a67d3a4cc3" >
+		<ee:transform doc:name="Set var zip" doc:id="8282a793-688b-4652-9eb3-310069ac1862" >
+			<ee:message >
+			</ee:message>
+			<ee:variables >
+				<ee:set-variable variableName="zip" ><![CDATA[%dw 2.0
+output application/java
+---
+modules::app::cFileMuleHomeData ++ "/in/example.zip"
+]]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
 		<ee:transform doc:name="Set payload /java - Args for Java Class" doc:id="84dd68f0-b350-470b-9218-62c09243fbd8" >
 			<ee:message >
 				<ee:set-payload ><![CDATA[%dw 2.0
 output application/java
 ---
 {
-  arg0: "fileZipPath" as String
+  arg0: vars.zip
 }
 ]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
-		<java:invoke-static doc:name="Invoke static" doc:id="0cf07f1e-774f-4926-886c-f436be26aeeb" class="org.mulesoft.common.ZipUtility" method="getZipFileList(String)">
+		<java:invoke-static doc:name="Invoke static org.mulesoft.common.ZipUtility.getZipFileList(String file) (getZipFileList(java.lang.String))" doc:id="0cf07f1e-774f-4926-886c-f436be26aeeb" class="org.mulesoft.common.ZipUtility" method="getZipFileList(java.lang.String)">
 			<java:args ><![CDATA[#[payload]]]></java:args>
 		</java:invoke-static>
 		<ee:transform doc:name="Set payload /json Response" doc:id="f0e4fbf1-9453-4b75-87da-2c84b6fa2fc7" >
@@ -27,7 +38,7 @@ output application/json
 ---
 {
 	transactionID: correlationId,
-	zipFile: "",
+	zipFile: vars.zip,
 	entries: payload
 }
 ]]></ee:set-payload>
