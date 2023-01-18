@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
+	<classpathentry kind="con" path="MULE_LIB/org.mule.connectors/mule-sockets-connector/1.2.3"/>
+	<classpathentry kind="con" path="MULE_LIB/org.mule.connectors/mule-http-connector/1.7.3"/>
+	<classpathentry kind="con" path="MULE_LIB/org.mule.modules/mule-apikit-module/1.8.1"/>
 	<classpathentry kind="con" path="MULE_LIB/org.mule.modules/mule-tracing-module/1.0.0"/>
 	<classpathentry kind="con" path="MULE_LIB/org.mule.connectors/mule-file-connector/1.5.0"/>
 	<classpathentry kind="con" path="MULE_LIB/org.mule.module/mule-java-module/1.2.10"/>
 	<classpathentry kind="con" path="MULE_LIB/com.mulesoft.modules/mule-secure-configuration-property-module/1.2.5"/>
-	<classpathentry kind="con" path="MULE_LIB/org.mule.modules/mule-apikit-module/1.6.1"/>
 	<classpathentry kind="con" path="MULE_LIB/org.mule.modules/mule-compression-module/2.2.1"/>
-	<classpathentry kind="con" path="MULE_LIB/org.mule.connectors/mule-http-connector/1.7.1"/>
-	<classpathentry kind="con" path="MULE_LIB/org.mule.connectors/mule-sockets-connector/1.2.2"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
 	<classpathentry exported="true" kind="con" path="MULE_RUNTIME/org.mule.tooling.server.4.4.0.ee"/>
 	<classpathentry kind="src" path="src/main/mule"/>
