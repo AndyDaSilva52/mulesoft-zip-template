@@ -45,6 +45,16 @@ output application/json
     </flow>
 	<flow name="get:\mule-home:api-zip-config">
         <logger level="INFO" message="get:\mule-home:api-zip-config" />
+		<flow-ref doc:name="Flow Reference API Zip Module File MULE_HOME Search" doc:id="2a968766-78a9-472a-944e-454e5d6617a6" name="api-zip-module-file-mule-home-search-subflow"/>
+		<ee:transform doc:name="payload /json" doc:id="156542ea-835c-4b81-8ade-57ffa6bc5b3c" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload
+]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
     </flow>
 	<flow name="get:\zip\compress:api-zip-config">
         <logger level="INFO" message="get:\zip\compress:api-zip-config" />
