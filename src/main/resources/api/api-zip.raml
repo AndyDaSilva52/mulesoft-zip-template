@@ -1,0 +1,103 @@
+#%RAML 1.0
+title: zip-template
+description: It show some examples of working with zip files.
+baseUri: http://localhost:8081/
+
+uses:
+  traits: library/traits.raml
+  #resourceTypes: 
+
+/mule-home:
+  get:
+    displayName: List All Files in Mule Home
+    description:
+    responses:
+      200:
+        body:
+          #application/xml:
+           
+          #application/yaml:
+             
+          application/json:
+            type: array
+            items:
+              type: object
+              properties:
+                path:
+                  type: string
+            
+
+/zip:
+  /compress:
+    get:
+      displayName: Compress using Mule Compression Module
+      description: |
+        
+      responses: 
+        200:
+          body:
+            application/json:
+
+  /decompress: 
+    get:
+      displayName: Decompress using Mule Compression Module
+      description:
+      responses: 
+        200:
+          body: 
+            application/json:
+
+  /archive:
+    get:
+      displayName: Archive using Mule Compression Module
+      description: |
+        ```java
+        {
+          "fileName": "fileContent"
+        }
+        ```
+      responses:
+        200:
+          body:
+            application/json:
+
+  /extract:
+    get:
+      displayName: Archive using Mule Compression Module
+      responses:
+        200:
+          body:
+            application/json:
+
+  /zip:
+    get:
+      displayName: Zip using Java Class
+  
+  /unzip:
+    get:
+      displayName: Unzip using Java Class
+  
+  /append:
+    get:
+      displayName: Include Files to existing Zip using Java Class
+  
+  /entries:
+    get:
+      is:
+      - traits.query-params-zip
+      
+      displayName: Get List of Entries inside Zip using Java Class (Without Extract)
+      responses:
+        200:
+          body:
+            application/json:
+            
+
+/healthcheck:
+  displayName: Health Check API
+  get:
+    displayName: Healt Check API
+    responses:
+      200:
+        body:
+          application/json:
