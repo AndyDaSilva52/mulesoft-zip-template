@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd ">
-    <http:listener-config name="api-zip-httpListenerConfig">
-        <http:listener-connection host="0.0.0.0" port="8082" />
-    </http:listener-config>
-    <apikit:config name="api-zip-config" api="api-zip.raml" outboundHeadersMapName="outboundHeaders" httpStatusVarName="httpStatus" />
+<mule xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd ">
+    
     <flow name="api-zip-main">
         <http:listener config-ref="api-zip-httpListenerConfig" path="/api/*">
             <http:response statusCode="#[vars.httpStatus default 200]">
@@ -15,7 +12,7 @@
             </http:error-response>
         </http:listener>
         <apikit:router config-ref="api-zip-config" />
-		<error-handler ref="api-zip-error-handler" />
+        <error-handler ref="api-zip-error-handler" />
     </flow>
     <flow name="api-zip-console">
         <http:listener config-ref="api-zip-httpListenerConfig" path="/console/*">
@@ -47,26 +44,27 @@ output application/json
     <flow name="get:\status:api-zip-config">
         <logger level="INFO" message="get:\status:api-zip-config" />
     </flow>
-	<flow name="get:\zip\compress:api-zip-config">
+    <flow name="get:\zip\compress:api-zip-config">
         <logger level="INFO" message="get:\zip\compress:api-zip-config" />
     </flow>
-	<flow name="get:\zip\decompress:api-zip-config">
+    <flow name="get:\zip\decompress:api-zip-config">
         <logger level="INFO" message="get:\zip\decompress:api-zip-config" />
     </flow>
     <flow name="get:\zip\archive:api-zip-config">
         <logger level="INFO" message="get:\zip\archive:api-zip-config" />
     </flow>
-	<flow name="get:\zip\extract:api-zip-config">
+    <flow name="get:\zip\extract:api-zip-config">
         <logger level="INFO" message="get:\zip\extract:api-zip-config" />
     </flow>
-	<flow name="get:\zip\entries-from-zip:api-zip-config">
-        <logger level="INFO" message="get:\zip\entries-from-zip:api-zip-config" />
+    <flow name="get:\zip\entries:api-zip-config">
+        <logger level="INFO" message="get:\zip\entries:api-zip-config" />
+		<flow-ref doc:name="Flow Ref API Zip Module Java Entries" doc:id="163c57f7-225a-49cf-a0ab-71814b125502" name="api-zip-module-java-entries-subflow"/>
     </flow>
-    <flow name="get:\zip\zip:api-zip-config">
+	<flow name="get:\zip\zip:api-zip-config">
         <logger level="INFO" message="get:\zip\zip:api-zip-config" />
     </flow>
-	<flow name="get:\zip\append-to-zip:api-zip-config">
-        <logger level="INFO" message="get:\zip\append-to-zip:api-zip-config" />
+    <flow name="get:\zip\append:api-zip-config">
+        <logger level="INFO" message="get:\zip\append:api-zip-config" />
     </flow>
 	<flow name="get:\zip\unzip:api-zip-config">
         <logger level="INFO" message="get:\zip\unzip:api-zip-config" />
