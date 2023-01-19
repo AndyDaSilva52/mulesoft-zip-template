@@ -13,7 +13,8 @@ http://www.mulesoft.org/schema/mule/java http://www.mulesoft.org/schema/mule/jav
 				<ee:set-variable variableName="zip" ><![CDATA[%dw 2.0
 output application/java
 ---
-modules::app::cFileMuleHomeData ++ "/in/example.zip"
+modules::app::cFileWorkingDirectory 
+	++ "/in/example.zip"
 ]]></ee:set-variable>
 			</ee:variables>
 		</ee:transform>
@@ -35,10 +36,12 @@ output application/java
 			<ee:message >
 				<ee:set-payload ><![CDATA[%dw 2.0
 output application/json
+
+import cleanPath from modules::app
 ---
 {
 	transactionID: correlationId,
-	zipFile: vars.zip,
+	zipFile: cleanPath(vars.zip),
 	entries: payload
 }
 ]]></ee:set-payload>

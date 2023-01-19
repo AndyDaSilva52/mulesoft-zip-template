@@ -3,6 +3,26 @@
 traits:
   header-x-correlation-id: !include ./traits/header-correlation-id.raml
   
+  query-params-path:
+    queryParameters:
+      path:
+        type: string
+        required: false
+        examples:
+          "Relative Folder `in`": "in"
+          "Relative Folder `out`": "out"
+          #"Absolute"
+          
+  query-params-recursive:
+    queryParameters:
+      recursive:
+        type: boolean
+        required: false
+        examples:
+          "True": true
+          "False": false
+          #"Absolute"
+  
   query-params-zip:
     queryParameters:
       zip:

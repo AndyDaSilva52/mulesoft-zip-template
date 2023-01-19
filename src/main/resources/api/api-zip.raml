@@ -7,25 +7,42 @@ uses:
   traits: library/traits.raml
   #resourceTypes: 
 
+types:
+  mule-home: !include ./dataType/mule-home.raml
+
 /mule-home:
   get:
+    is: 
+    - traits.query-params-path
+    - traits.query-params-recursive
     displayName: List All Files in Mule Home
     description:
+    
+    #body:
+      #{
+      #  "createdSince": "2023-01-19T00:01:46.507-03:00",
+      #  "createdUntil": "2023-01-19T00:01:46.508-03:00",
+      #  "updatedSince": "2023-01-19T00:01:46.508-03:00",
+      #  "updatedUntil": "2023-01-19T00:01:46.508-03:00",
+      #  "accessedSince": "2023-01-19T00:01:46.508-03:00",
+      #  "accessedUntil": "2023-01-19T00:01:46.509-03:00",
+      #  "notUpdatedInTheLast": 0,
+      #  "updatedInTheLast": 0,
+      #  "timeUnit": "",
+      #  "filenamePattern": "",
+      #  "minSize": 0,
+      #  "maxSize": 0
+      #}
+    
     responses:
       200:
-        body:
-          #application/xml:
-           
-          #application/yaml:
-             
+        body:   
           application/json:
-            type: array
-            items:
-              type: object
-              properties:
-                path:
-                  type: string
+            type: mule-home
             
+          application/xml:
+           type: mule-home
+          #application/yaml:
 
 /zip:
   /compress:

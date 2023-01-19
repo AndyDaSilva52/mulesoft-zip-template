@@ -100,11 +100,11 @@ http://www.mulesoft.org/schema/mule/tls http://www.mulesoft.org/schema/mule/tls/
 
 
 	<file:config
-		name="File_Config_Mule_Home_Data"
+		name="File_Config_Mule_Home_cFileWorkingDirectory"
 		doc:name="File Config"
 		doc:id="f30d9d72-8ccf-497d-ba64-87e41e348a69"
-		doc:description="resources/data">
-		<file:connection workingDir="#[modules::app::cFileMuleHomeData]" />
+		doc:description="modules::app::cFileWorkingDirectory">
+		<file:connection workingDir="#[modules::app::cFileWorkingDirectory]" />
 	</file:config>
 
 </mule>

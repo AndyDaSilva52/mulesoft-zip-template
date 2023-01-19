@@ -89,6 +89,20 @@ output application/json
 				</ee:variables>
 			</ee:transform>
 		</on-error-propagate>
+		<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="0499f3b5-d60b-46ad-a060-e07dca79c61c" type="ANY">
+			<ee:transform doc:name="Set payload /json; Set var httpStatus = 500" doc:id="aea1f57c-9d92-4d9e-900f-58a21e930e83" >
+				<ee:message >
+					<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{ message: error.description }]]></ee:set-payload>
+				</ee:message>
+				<ee:variables >
+					<ee:set-variable variableName="httpStatus" ><![CDATA[500]]></ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+		</on-error-propagate>
 		
-	</error-handler>
+	
+</error-handler>
 </mule>
