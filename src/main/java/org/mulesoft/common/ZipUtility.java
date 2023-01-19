@@ -46,7 +46,7 @@ public class ZipUtility {
 	 * @throws FileNotFoundException
 	 * @throws IOException
 	 */
-	public void zip(String[] files, String destZipFile) throws IOException {
+	public static void zip(String[] files, String destZipFile) throws IOException {
 
 		List<File> listFiles = new ArrayList<File>();
 
