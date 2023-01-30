@@ -289,7 +289,7 @@ public class ZipUtility {
 	 * @param files
 	 * @throws IOException
 	 */
-	public static void addFilesToExisintgZip(String zipFile, String[] files) throws IOException {
+	public static void addFilesToExistingZip(String zipFile, String[] files) throws IOException {
 
 		List<File> listFiles = new ArrayList<>();
 
