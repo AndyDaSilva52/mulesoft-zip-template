@@ -5,13 +5,15 @@
 	xmlns="http://www.mulesoft.org/schema/mule/core"
 	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="
-http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd">
+	xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+						http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd">
 	<error-handler
 		name="api-zip-error-handler"
 		doc:id="72494c43-a7f1-49bb-94a9-4413c90222e9">
 
 		<on-error-propagate type="APIKIT:BAD_REQUEST">
+			<flow-ref doc:name="Flow Ref Set outboundHeaders"
+				doc:id="63b3a2ed-ebe9-4870-a4a9-eb642a4a9492" name="common-outboundHeaders-subflow" />
 			<ee:transform doc:name="Set payload /json; Set var httpStatus = 400">
 				<ee:message>
 					<ee:set-payload><![CDATA[%dw 2.0
@@ -23,8 +25,11 @@ output application/json
 					<ee:set-variable variableName="httpStatus">400</ee:set-variable>
 				</ee:variables>
 			</ee:transform>
+
 		</on-error-propagate>
 		<on-error-propagate type="APIKIT:NOT_FOUND">
+			<flow-ref doc:name="Flow Ref Set outboundHeaders"
+				doc:id="b89df91c-d521-485a-bfd3-8f0903f72be6" name="common-outboundHeaders-subflow" />
 			<ee:transform doc:name="Set payload /json; Set var httpStatus = 404">
 				<ee:message>
 					<ee:set-payload><![CDATA[%dw 2.0
@@ -36,8 +41,11 @@ output application/json
 					<ee:set-variable variableName="httpStatus">404</ee:set-variable>
 				</ee:variables>
 			</ee:transform>
+
 		</on-error-propagate>
 		<on-error-propagate type="APIKIT:METHOD_NOT_ALLOWED">
+			<flow-ref doc:name="Flow Ref Set outboundHeaders"
+				doc:id="e8ddc3bd-4b3a-4227-b92f-d275337d1fc5" name="common-outboundHeaders-subflow" />
 			<ee:transform doc:name="Set payload /json; Set var httpStatus = 405">
 				<ee:message>
 					<ee:set-payload><![CDATA[%dw 2.0
@@ -49,8 +57,11 @@ output application/json
 					<ee:set-variable variableName="httpStatus">405</ee:set-variable>
 				</ee:variables>
 			</ee:transform>
+
 		</on-error-propagate>
 		<on-error-propagate type="APIKIT:NOT_ACCEPTABLE">
+			<flow-ref doc:name="Flow Ref Set outboundHeaders"
+				doc:id="5de724ac-d01a-4621-9c65-db67342a3a0a" name="common-outboundHeaders-subflow" />
 			<ee:transform doc:name="Set payload /json; Set var httpStatus = 406">
 				<ee:message>
 					<ee:set-payload><![CDATA[%dw 2.0
@@ -62,8 +73,11 @@ output application/json
 					<ee:set-variable variableName="httpStatus">406</ee:set-variable>
 				</ee:variables>
 			</ee:transform>
+
 		</on-error-propagate>
 		<on-error-propagate type="APIKIT:UNSUPPORTED_MEDIA_TYPE">
+			<flow-ref doc:name="Flow Ref Set outboundHeaders"
+				doc:id="0dc2bcb1-d0de-4ff0-ba78-3ce0cbe7b9e5" name="common-outboundHeaders-subflow" />
 			<ee:transform doc:name="Set payload /json; Set var httpStatus = 415">
 				<ee:message>
 					<ee:set-payload><![CDATA[%dw 2.0
@@ -75,8 +89,11 @@ output application/json
 					<ee:set-variable variableName="httpStatus">415</ee:set-variable>
 				</ee:variables>
 			</ee:transform>
+
 		</on-error-propagate>
 		<on-error-propagate type="APIKIT:NOT_IMPLEMENTED">
+			<flow-ref doc:name="Flow Ref Set outboundHeaders"
+				doc:id="2b53a308-e42d-414d-9a7c-213a8181ecfb" name="common-outboundHeaders-subflow" />
 			<ee:transform doc:name="Set payload /json; Set var httpStatus = 501">
 				<ee:message>
 					<ee:set-payload><![CDATA[%dw 2.0
@@ -88,21 +105,28 @@ output application/json
 					<ee:set-variable variableName="httpStatus">501</ee:set-variable>
 				</ee:variables>
 			</ee:transform>
+
 		</on-error-propagate>
-		<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="0499f3b5-d60b-46ad-a060-e07dca79c61c" type="ANY">
-			<ee:transform doc:name="Set payload /json; Set var httpStatus = 500" doc:id="aea1f57c-9d92-4d9e-900f-58a21e930e83" >
-				<ee:message >
-					<ee:set-payload ><![CDATA[%dw 2.0
+		<on-error-propagate enableNotifications="true" logException="true"
+			doc:name="On Error Propagate" doc:id="0499f3b5-d60b-46ad-a060-e07dca79c61c" type="ANY">
+			<flow-ref doc:name="Flow Ref Set outboundHeaders"
+				doc:id="118be6d0-ffe6-4285-a7e3-37b1853b943d" name="common-outboundHeaders-subflow" />
+			<ee:transform doc:name="Set payload /json; Set var httpStatus = 500"
+				doc:id="aea1f57c-9d92-4d9e-900f-58a21e930e83">
+				<ee:message>
+					<ee:set-payload><![CDATA[%dw 2.0
 output application/json
 ---
 { message: error.description }]]></ee:set-payload>
 				</ee:message>
-				<ee:variables >
-					<ee:set-variable variableName="httpStatus" ><![CDATA[500]]></ee:set-variable>
+				<ee:variables>
+					<ee:set-variable variableName="httpStatus"><![CDATA[500]]></ee:set-variable>
 				</ee:variables>
 			</ee:transform>
 		</on-error-propagate>
-		
-	
-</error-handler>
+
+
+	</error-handler>
+
+
 </mule>

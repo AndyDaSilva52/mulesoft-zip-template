@@ -29,7 +29,8 @@ http://www.mulesoft.org/schema/mule/tls http://www.mulesoft.org/schema/mule/tls/
 	<http:listener-config name="api-zip-httpListenerConfig">
 		<http:listener-connection
 			host="${https.host}"
-			port="${https.port}" protocol="HTTPS">
+			port="${https.port}"
+			protocol="HTTPS">
 			<tls:context>
 				<tls:key-store
 					type="jks"

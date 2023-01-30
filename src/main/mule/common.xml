@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule
+	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd">
+
+
+	<sub-flow
+		name="common-outboundHeaders-subflow"
+		doc:id="42894e45-415c-452c-8f90-ba80724135d9">
+		<ee:transform
+			doc:name="Set variable outboundHeaders with correlationId"
+			doc:id="55e1f857-9b49-4f13-93ad-12183cb58627">
+			<ee:message>
+			</ee:message>
+			<ee:variables>
+				<ee:set-variable variableName="outboundHeaders"><![CDATA[%dw 2.0
+output application/java
+---
+(vars.outboundHeaders default {}) ++ {
+	'X-Correlation-ID': correlationId
+}
+]]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+	</sub-flow>
+
+
+</mule>
