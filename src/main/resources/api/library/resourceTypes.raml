@@ -1,0 +1,17 @@
+#%RAML 1.0 ResourceType
+
+uses:
+  traits: ./traits.raml
+
+#collection:
+#  usage: Use this resourceType to represet any collection of items.
+  
+item:
+  usage: Use this resourceType to represet any single item.
+  description: A single <<typeName>>
+  
+  get:
+    description: Get a <<typeName>>
+    is:
+    - traits.responses-200-OK
+      

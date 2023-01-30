@@ -1,0 +1,16 @@
+#%RAML 1.0 Trait
+    responses:
+      400:
+        description: |
+          400 BadRequest
+        body:
+          application/json:
+            type: types.Erro
+            examples: 
+              #"404 Bad Request": !include ../examples/responses/eror/400.json
+        headers: 
+          x-correlation-id:
+            required: false
+            type: string
+            description: Unique value to track end to end transaction
+            example: "ec0c8b70-49a5-11ed-8288-02a9c35111b8"

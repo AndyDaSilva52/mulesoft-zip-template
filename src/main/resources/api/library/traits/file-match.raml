@@ -1,0 +1,84 @@
+#%RAML 1.0 DataType 
+type: object
+properties:
+  
+  createdSince:
+    type: datetime
+    example: '2023-01-19T00:01:46.507Z'
+    required: false
+  createdUntil:
+    type: datetime
+    example: '2023-01-19T00:01:46.508Z'
+    required: false
+  updatedSince:
+    type: datetime
+    example: '2023-01-19T00:01:46.508Z'
+    required: false
+  updatedUntil:
+    type: datetime
+    example: '2023-01-19T00:01:46.508Z'
+    required: false
+  accessedSince:
+    type: datetime
+    example: '2023-01-19T00:01:46.508Z'
+    required: false
+  accessedUntil:
+    type: datetime
+    example: '2023-01-19T00:01:46.509Z'
+    required: false
+  
+  notUpdatedInTheLast:
+    type: integer
+    example: 0
+    required: false
+  updatedInTheLast:
+    type: integer
+    example: 0
+    required: false
+  timeUnit:
+    type: string
+    example: DAYS
+    required: false
+  
+  filenamePattern:
+    type: string
+    example: 'glob:'
+    required: false
+  pathPattern:
+    type: string
+    example: 'regex:'
+    required: false
+  
+  directories:
+    type: string
+    example: INCLUDE
+    required: false
+    enum:
+     - INCLUDE
+     - REQUIRE
+     - EXCLUDE
+  regularFiles:
+    type: string
+    example: REQUIRE
+    required: false
+    enum:
+     - INCLUDE
+     - REQUIRE
+     - EXCLUDE
+  symLinks:
+    type: string
+    example: EXCLUDE
+    required: false
+    enum:
+     - INCLUDE
+     - REQUIRED
+     - EXCLUDE
+  
+  minSize:
+    type: integer
+    example: 0
+    required: false
+  maxSize:
+    type: integer
+    example: 0
+    required: false

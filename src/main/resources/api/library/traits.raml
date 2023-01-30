@@ -12,7 +12,12 @@ traits:
           "Relative Folder `in`": "in"
           "Relative Folder `out`": "out"
           #"Absolute"
+  
           
+  query-params-file-match:
+    queryParameters:
+      match: !include ./traits/file-match.raml
+  
   query-params-recursive:
     queryParameters:
       recursive:
@@ -31,3 +36,6 @@ traits:
         required: true
         examples:
           "Example": "example.zip" 
+  
+  responses-200-OK: !include ./traits/responses/200-OK.raml
+  
