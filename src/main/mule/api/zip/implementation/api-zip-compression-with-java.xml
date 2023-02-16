@@ -29,7 +29,7 @@ output application/java
 ]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
-		<java:invoke-static doc:name="Invoke static org.mulesoft.common.ZipUtility.getZipFileList(String file) (getZipFileList(java.lang.String))" doc:id="0cf07f1e-774f-4926-886c-f436be26aeeb" class="org.mulesoft.common.ZipUtility" method="getZipFileList(java.lang.String)">
+		<java:invoke-static doc:name="Invoke static org.mulesoft.common.ZipUtility.getZipFileList(String file) &#10;&#10;  (getZipFileList(java.lang.String))" doc:id="0cf07f1e-774f-4926-886c-f436be26aeeb" class="org.mulesoft.common.ZipUtility" method="getZipFileList(java.lang.String)">
 			<java:args ><![CDATA[#[payload]]]></java:args>
 		</java:invoke-static>
 		<ee:transform doc:name="Set payload /json Response" doc:id="f0e4fbf1-9453-4b75-87da-2c84b6fa2fc7" >
@@ -47,49 +47,53 @@ import cleanPath from modules::app
 ]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
+		<logger level="INFO" doc:name="Logger" doc:id="048030e0-5065-470d-a448-56f9858cae20" />
 	</sub-flow>
 	<sub-flow name="api-zip-module-java-zip-subflow" doc:id="7cd9b468-a8e6-4ed5-a387-6a73e256d83a" >
-		<logger level="INFO" doc:name="Logger" doc:id="fbdc2962-f94b-478d-bb26-62319fb7a192" />
 		<ee:transform doc:name="Set payload /java - Args for Java Class" doc:id="05cdae77-305c-4398-a465-65976748cd73" >
 			<ee:message >
 				<ee:set-payload ><![CDATA[%dw 2.0
 output application/java
 ---
 {
+	files: "", // files
+	destZipFile: "" // destZipFiles
 }]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
-		<java:invoke-static doc:name="Invoke static org.mulesoft.common.ZipUtility.zip(String[] files, String destZipFile) (zip(java.lang.String[],java.lang.String))" doc:id="0ae4dc65-741c-4dce-a6a7-fd0377a6388d" class="org.mulesoft.common.ZipUtility" method="zip(java.lang.String[],java.lang.String)">
+		<java:invoke-static doc:name="Invoke static org.mulesoft.common.ZipUtility.zip(String[] files, String destZipFile) &#10;&#10; (zip(java.lang.String[],java.lang.String))" doc:id="0ae4dc65-741c-4dce-a6a7-fd0377a6388d" class="org.mulesoft.common.ZipUtility" method="zip(java.lang.String[],java.lang.String)">
 			<java:args ><![CDATA[#[payload]]]></java:args>
 		</java:invoke-static>
 	</sub-flow>
 	<sub-flow name="api-zip-module-java-append-subflow" doc:id="e7cef1a6-cea4-4168-98dc-a11db8843e45" >
-		<logger level="INFO" doc:name="Logger" doc:id="215e55f3-2bf2-4425-9b4d-ab915578936a" />
 		<ee:transform doc:name="Set payload /java - Args for Java Class" doc:id="95c65611-7aad-49b6-8b5f-e05025f01a6c" >
 			<ee:message >
 				<ee:set-payload ><![CDATA[%dw 2.0
 output application/java
 ---
 {
+	zipFile: "", // zipFile
+	files: [""] // files [""]
 }]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
-		<java:invoke-static doc:name="Invoke static org.mulesoft.common.ZipUtility.addFilesToExisintgZip(String zipFile, String[] files) (addFilesToExisintgZip(java.lang.String,java.lang.String[]))" doc:id="8dc9f01b-4efc-41ad-bec6-a7f20263e46d" class="org.mulesoft.common.ZipUtility" method="addFilesToExisintgZip(java.lang.String,java.lang.String[])" >
+		<java:invoke-static doc:name="Invoke static org.mulesoft.common.ZipUtility.addFilesToExisintgZip(String zipFile, String[] files) &#10;&#10; (addFilesToExisintgZip(java.lang.String,java.lang.String[]))" doc:id="8dc9f01b-4efc-41ad-bec6-a7f20263e46d" class="org.mulesoft.common.ZipUtility" method="addFilesToExistingZip(java.lang.String,java.lang.String[])" >
 			<java:args ><![CDATA[#[payload]]]></java:args>
 		</java:invoke-static>
 	</sub-flow>
 	<sub-flow name="api-zip-module-java-unzip-subflow" doc:id="b7a83807-b046-450b-b026-49c7892ebfc9" >
-		<logger level="INFO" doc:name="Logger" doc:id="df0035ec-22dd-4897-90fb-c57d86ee5ac8" />
 		<ee:transform doc:name="Set payload /java - Args for Java Class" doc:id="983d4264-217e-4d0b-8b6b-9d166fd5cf2c" >
 			<ee:message >
 				<ee:set-payload ><![CDATA[%dw 2.0
 output application/java
 ---
 {
+	zipFile: "", // zipFile
+	outputFolder: "" // outputFolder
 }]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
-		<java:invoke-static method="unZipFiles(java.lang.String,java.lang.String)" doc:name="Invoke static org.mulesoft.common.ZipUtility.unZipFiles(String zipFile, String outputFolder) (unZipFiles(java.lang.String,java.lang.String))" doc:id="4f769440-2a40-4e76-8937-5c5d11759d7c" class="org.mulesoft.common.ZipUtility" >
+		<java:invoke-static doc:name="Invoke static org.mulesoft.common.ZipUtility.unZipFiles(String zipFile, String outputFolder) &#10;&#10; (unZipFiles(java.lang.String,java.lang.String))" doc:id="4f769440-2a40-4e76-8937-5c5d11759d7c" class="org.mulesoft.common.ZipUtility" method="unZipFiles(java.lang.String,java.lang.String)">
 			<java:args ><![CDATA[#[payload]]]></java:args>
 		</java:invoke-static>
 	</sub-flow>
