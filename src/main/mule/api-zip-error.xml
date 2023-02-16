@@ -27,6 +27,8 @@ output application/json
 			</ee:transform>
 
 		</on-error-propagate>
+		
+		
 		<on-error-propagate type="APIKIT:NOT_FOUND">
 			<flow-ref doc:name="Flow Ref Set outboundHeaders"
 				doc:id="b89df91c-d521-485a-bfd3-8f0903f72be6" name="common-outboundHeaders-subflow" />
@@ -43,6 +45,8 @@ output application/json
 			</ee:transform>
 
 		</on-error-propagate>
+		
+		
 		<on-error-propagate type="APIKIT:METHOD_NOT_ALLOWED">
 			<flow-ref doc:name="Flow Ref Set outboundHeaders"
 				doc:id="e8ddc3bd-4b3a-4227-b92f-d275337d1fc5" name="common-outboundHeaders-subflow" />
@@ -59,6 +63,8 @@ output application/json
 			</ee:transform>
 
 		</on-error-propagate>
+		
+		
 		<on-error-propagate type="APIKIT:NOT_ACCEPTABLE">
 			<flow-ref doc:name="Flow Ref Set outboundHeaders"
 				doc:id="5de724ac-d01a-4621-9c65-db67342a3a0a" name="common-outboundHeaders-subflow" />
@@ -75,6 +81,8 @@ output application/json
 			</ee:transform>
 
 		</on-error-propagate>
+		
+		
 		<on-error-propagate type="APIKIT:UNSUPPORTED_MEDIA_TYPE">
 			<flow-ref doc:name="Flow Ref Set outboundHeaders"
 				doc:id="0dc2bcb1-d0de-4ff0-ba78-3ce0cbe7b9e5" name="common-outboundHeaders-subflow" />
@@ -86,11 +94,13 @@ output application/json
 {message: "Unsupported media type"}]]></ee:set-payload>
 				</ee:message>
 				<ee:variables>
-					<ee:set-variable variableName="httpStatus">415</ee:set-variable>
+					<ee:set-variable variableName="httpStatus"><![CDATA[415]]></ee:set-variable>
 				</ee:variables>
 			</ee:transform>
 
 		</on-error-propagate>
+		
+		
 		<on-error-propagate type="APIKIT:NOT_IMPLEMENTED">
 			<flow-ref doc:name="Flow Ref Set outboundHeaders"
 				doc:id="2b53a308-e42d-414d-9a7c-213a8181ecfb" name="common-outboundHeaders-subflow" />
@@ -102,11 +112,13 @@ output application/json
 {message: "Not Implemented"}]]></ee:set-payload>
 				</ee:message>
 				<ee:variables>
-					<ee:set-variable variableName="httpStatus">501</ee:set-variable>
+					<ee:set-variable variableName="httpStatus"><![CDATA[501]]></ee:set-variable>
 				</ee:variables>
 			</ee:transform>
 
 		</on-error-propagate>
+		
+		
 		<on-error-propagate enableNotifications="true" logException="true"
 			doc:name="On Error Propagate" doc:id="0499f3b5-d60b-46ad-a060-e07dca79c61c" type="ANY">
 			<flow-ref doc:name="Flow Ref Set outboundHeaders"
@@ -117,7 +129,7 @@ output application/json
 					<ee:set-payload><![CDATA[%dw 2.0
 output application/json
 ---
-{ message: error.description }]]></ee:set-payload>
+{message: error.description}]]></ee:set-payload>
 				</ee:message>
 				<ee:variables>
 					<ee:set-variable variableName="httpStatus"><![CDATA[500]]></ee:set-variable>

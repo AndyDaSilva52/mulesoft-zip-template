@@ -1,38 +1,100 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:compression="http://www.mulesoft.org/schema/mule/compression"
+<mule
+	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns:compression="http://www.mulesoft.org/schema/mule/compression"
 	xmlns:file="http://www.mulesoft.org/schema/mule/file"
-	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
 http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd
 http://www.mulesoft.org/schema/mule/compression http://www.mulesoft.org/schema/mule/compression/current/mule-compression.xsd
 http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
-	
-	<sub-flow name="api-zip-module-compression-compress-subflow" doc:id="eea1e170-35d7-4f56-b594-0146b8f25866" >
-		<file:read doc:name="Read File" doc:id="bf057183-2c23-4739-82e1-991ccc3fd8b3" config-ref="File_Config_Mule_Home_cFileWorkingDirectory" path='#[modules::app::cPathIn ++ "data.csv"]' outputMimeType="application/csv; streaming=true; ignoreemptyline=true"/>
-		<compression:compress doc:name="Compress using Zip Compressor" doc:id="d5edc5d6-4437-4218-8a78-ef0058201876" >
-			<compression:compressor >
+
+	<sub-flow
+		name="api-zip-compression-with-mule-compress-subflow"
+		doc:id="eea1e170-35d7-4f56-b594-0146b8f25866">
+
+		<logger
+			level="INFO"
+			doc:name="Doc:"
+			doc:id="ba8eb813-bd84-4158-b3aa-67c4c5fc8d0e" />
+
+		<file:read
+			doc:name="Read File"
+			doc:id="bf057183-2c23-4739-82e1-991ccc3fd8b3"
+			config-ref="File_Config_Mule_Home_cFileWorkingDirectory"
+			path='#[modules::app::cPathIn ++ "data.csv"]'
+			outputMimeType="application/csv; streaming=true; ignoreemptyline=true" />
+
+		<compression:compress
+			doc:name="Compress using Zip Compressor"
+			doc:id="d5edc5d6-4437-4218-8a78-ef0058201876">
+			<compression:compressor>
 				<compression:zip-compressor />
 			</compression:compressor>
 		</compression:compress>
-		<file:write doc:name="Write" doc:id="c50d92db-ef6a-43b9-8447-41469a6576d8" config-ref="File_Config_Mule_Home_cFileWorkingDirectory" path="#[modules::app::cPathOut]"/>
+
+		<file:write
+			doc:name="Write"
+			doc:id="c50d92db-ef6a-43b9-8447-41469a6576d8"
+			config-ref="File_Config_Mule_Home_cFileWorkingDirectory"
+			path="#[modules::app::cPathOut]" />
+
 	</sub-flow>
-	
-	
-	<sub-flow name="api-zip-module-compression-decompress-subflow" doc:id="c747aadc-f36f-49cf-bad1-e5881a48829d" >
-		<file:read doc:name="Read Compressed File" doc:id="49c9ec18-b7b4-439a-b7c8-266f7b243969" config-ref="File_Config_Mule_Home_cFileWorkingDirectory" path='#[modules::app::cPathOut ++ "data.zip"]'/>
-		<compression:decompress doc:name="Decompress using Zip Decompressor" doc:id="0102003e-ff29-4c71-b753-b47f86b91710" >
-			<compression:decompressor >
+
+
+
+	<sub-flow
+		name="api-zip-compression-with-mule-decompress-subflow"
+		doc:id="c747aadc-f36f-49cf-bad1-e5881a48829d">
+
+		<logger
+			level="INFO"
+			doc:name="Doc:"
+			doc:id="7a3355eb-dae7-451f-8fea-039cf897e119" />
+
+		<file:read
+			doc:name="Read Compressed File"
+			doc:id="49c9ec18-b7b4-439a-b7c8-266f7b243969"
+			config-ref="File_Config_Mule_Home_cFileWorkingDirectory"
+			path='#[modules::app::cPathOut ++ "data.zip"]' />
+
+		<compression:decompress
+			doc:name="Decompress using Zip Decompressor"
+			doc:id="0102003e-ff29-4c71-b753-b47f86b91710">
+			<compression:decompressor>
 				<compression:zip-decompressor />
 			</compression:decompressor>
 		</compression:decompress>
-		<file:write doc:name="Write" doc:id="06e2d59b-52e8-47fc-9062-970f3f4df61b" config-ref="File_Config_Mule_Home_cFileWorkingDirectory" path="#[modules::app::cPathOut]"/>
+
+		<file:write
+			doc:name="Write"
+			doc:id="06e2d59b-52e8-47fc-9062-970f3f4df61b"
+			config-ref="File_Config_Mule_Home_cFileWorkingDirectory"
+			path="#[modules::app::cPathOut]" />
+
 	</sub-flow>
-	<sub-flow name="api-zip-module-compression-archive-subflow" doc:id="4e47dc33-6f01-4694-9272-8d860cb5d662" >
-		<ee:transform doc:name="DW Set variable path" doc:id="acaa15c5-7438-4353-a102-be41478bbebc" >
-			<ee:message >
+
+
+
+	<sub-flow
+		name="api-zip-compression-with-mule-archive-subflow"
+		doc:id="4e47dc33-6f01-4694-9272-8d860cb5d662">
+
+		<logger
+			level="INFO"
+			doc:name="Doc:"
+			doc:id="07e6ccb7-a100-49c3-9c51-48a2ad67417d" />
+
+		<ee:transform
+			doc:name="DW Set variable path"
+			doc:id="acaa15c5-7438-4353-a102-be41478bbebc">
+			<ee:message>
 			</ee:message>
-			<ee:variables >
-				<ee:set-variable variableName="path" ><![CDATA[%dw 2.0
+			<ee:variables>
+				<ee:set-variable variableName="path"><![CDATA[%dw 2.0
 output application/java
 ---
 modules::app::cleanPath(
@@ -40,9 +102,12 @@ modules::app::cleanPath(
 )]]></ee:set-variable>
 			</ee:variables>
 		</ee:transform>
-		<ee:transform doc:name="DW File Matching Rules" doc:id="1c0a4b37-62e0-42f5-8b8b-64dba62a2cc2" >
-			<ee:message >
-				<ee:set-payload ><![CDATA[%dw 2.0
+
+		<ee:transform
+			doc:name="DW File Matching Rules"
+			doc:id="1c0a4b37-62e0-42f5-8b8b-64dba62a2cc2">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
 output application/java
 ---
 ({
@@ -68,10 +133,19 @@ output application/java
 ]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
-		<file:list doc:name="List All Files to Zip" doc:id="cbb3d441-6bb9-47c7-9623-66cbbc8ce0da" config-ref="File_Config_Mule_Home_cFileWorkingDirectory" directoryPath="#[modules::app::cPathIn]" matcher="#[payload]"/>
-		<ee:transform doc:name="DW payload of Mule Message TO Expect Input for Archive" doc:id="0c70031b-acf6-4289-9e82-3ab1a3b19438" >
-			<ee:message >
-				<ee:set-payload ><![CDATA[%dw 2.0
+
+		<file:list
+			doc:name="List All Files to Zip"
+			doc:id="cbb3d441-6bb9-47c7-9623-66cbbc8ce0da"
+			config-ref="File_Config_Mule_Home_cFileWorkingDirectory"
+			directoryPath="#[modules::app::cPathIn]"
+			matcher="#[payload]" />
+
+		<ee:transform
+			doc:name="DW payload of Mule Message TO Expect Input for Archive"
+			doc:id="0c70031b-acf6-4289-9e82-3ab1a3b19438">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
 output application/java
 //output application/dw 
 //	deferred=true, onlyData=true, bufferSize=8192 //TODO: Possible improvement
@@ -87,19 +161,41 @@ payload
 ]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
-		<compression:archive doc:name="Archive" doc:id="265d5b20-9650-4b24-99bf-2bc520280b77" >
-			<compression:archiver >
+
+		<compression:archive
+			doc:name="Archive"
+			doc:id="265d5b20-9650-4b24-99bf-2bc520280b77">
+			<compression:archiver>
 				<compression:zip-archiver />
 			</compression:archiver>
 		</compression:archive>
-		<file:write doc:name="Write Zip File TO data/out/correlationId" doc:id="9f5009ad-6ca7-4ee0-aae5-7bdefa678470" config-ref="File_Config_Mule_Home_cFileWorkingDirectory" path="#[vars.path]"/>
+
+		<file:write
+			doc:name="Write Zip File TO data/out/correlationId"
+			doc:id="9f5009ad-6ca7-4ee0-aae5-7bdefa678470"
+			config-ref="File_Config_Mule_Home_cFileWorkingDirectory"
+			path="#[vars.path]" />
+
 	</sub-flow>
-	<sub-flow name="api-zip-module-compression-extract-subflow" doc:id="75a6b2b9-851c-4d57-93e2-7aa99911e774" >
-		<ee:transform doc:name="DW Set variable props" doc:id="7b02099e-20d7-470f-b2ee-6caa34eb2a72" >
-			<ee:message >
+
+
+
+	<sub-flow
+		name="api-zip-compression-with-mule-extract-subflow"
+		doc:id="75a6b2b9-851c-4d57-93e2-7aa99911e774">
+
+		<logger
+			level="INFO"
+			doc:name="Doc:"
+			doc:id="b95d78c8-f087-4b5d-a663-8ec520b4ef77" />
+
+		<ee:transform
+			doc:name="DW Set variable props"
+			doc:id="7b02099e-20d7-470f-b2ee-6caa34eb2a72">
+			<ee:message>
 			</ee:message>
-			<ee:variables >
-				<ee:set-variable variableName="props" ><![CDATA[%dw 2.0
+			<ee:variables>
+				<ee:set-variable variableName="props"><![CDATA[%dw 2.0
 output application/java
 ---
 {
@@ -108,24 +204,38 @@ output application/java
 }]]></ee:set-variable>
 			</ee:variables>
 		</ee:transform>
-		<file:read doc:name="Read Zip File" doc:id="ff17e40b-84cb-4a60-9a22-50bc70a5a49c" config-ref="File_Config_Mule_Home_cFileWorkingDirectory" path='#[vars.props.path ++ "/" ++ vars.props.name]'/>
-		<compression:extract doc:name="Extract" doc:id="ecdd50f2-1f9f-4d81-bf3d-23db1d729706" >
-			<compression:extractor >
+
+		<file:read
+			doc:name="Read Zip File"
+			doc:id="ff17e40b-84cb-4a60-9a22-50bc70a5a49c"
+			config-ref="File_Config_Mule_Home_cFileWorkingDirectory"
+			path='#[vars.props.path ++ "/" ++ vars.props.name]' />
+
+		<compression:extract
+			doc:name="Extract"
+			doc:id="ecdd50f2-1f9f-4d81-bf3d-23db1d729706">
+			<compression:extractor>
 				<compression:zip-extractor />
 			</compression:extractor>
 		</compression:extract>
-		<ee:transform doc:name="DW Set Variable entries (List of Items inside the Zip)" doc:id="0f0232f3-8d8c-4ac1-a208-2b60ecb8445f" >
-			<ee:message >
+
+		<ee:transform
+			doc:name="DW Set Variable entries (List of Items inside the Zip)"
+			doc:id="0f0232f3-8d8c-4ac1-a208-2b60ecb8445f">
+			<ee:message>
 			</ee:message>
-			<ee:variables >
-				<ee:set-variable variableName="entries" ><![CDATA[%dw 2.0
+			<ee:variables>
+				<ee:set-variable variableName="entries"><![CDATA[%dw 2.0
 output application/java
 ---
 payload pluck ($$)
 ]]></ee:set-variable>
 			</ee:variables>
 		</ee:transform>
-		<ee:transform doc:name="DW Set payload /java AS Array&lt;{fileName, fileContent}&gt;" doc:id="64891bb4-fbd6-47ec-b159-de8521fa0e0d">
+
+		<ee:transform
+			doc:name="DW Set payload /java AS Array&lt;{fileName, fileContent}&gt;"
+			doc:id="64891bb4-fbd6-47ec-b159-de8521fa0e0d">
 			<ee:message>
 				<ee:set-payload><![CDATA[%dw 2.0
 output application/java
@@ -142,12 +252,20 @@ payload pluck {
 ]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
-		<foreach doc:name="For Each_File from Zip Write in Mule Home" doc:id="6e5c371e-448f-4957-a781-bcee6f85c7ec" >
-			<file:write doc:name="Write File" doc:id="41f87686-e598-4856-844a-3bba9f19fd92" config-ref="File_Config_Mule_Home_cFileWorkingDirectory" path='#[vars.props.path ++ "/" ++ vars.props.name ++ "/" ++ payload.fileName]'>
-				<file:content ><![CDATA[#[payload.fileContent]]]></file:content>
+
+		<foreach
+			doc:name="For Each_File from Zip Write in Mule Home"
+			doc:id="6e5c371e-448f-4957-a781-bcee6f85c7ec">
+			<file:write
+				doc:name="Write File"
+				doc:id="41f87686-e598-4856-844a-3bba9f19fd92"
+				config-ref="File_Config_Mule_Home_cFileWorkingDirectory"
+				path='#[vars.props.path ++ "/" ++ vars.props.name ++ "/" ++ payload.fileName]'>
+				<file:content><![CDATA[#[payload.fileContent]]]></file:content>
 			</file:write>
 		</foreach>
+
 	</sub-flow>
-	
-	
+
+
 </mule>
