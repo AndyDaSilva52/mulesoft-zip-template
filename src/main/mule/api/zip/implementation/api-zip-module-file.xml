@@ -37,14 +37,24 @@ output application/java
 		</ee:transform>
 		<file:list doc:name="List using cWorkingDirectory ( resources/data/* )" doc:id="464dc405-e6a7-497b-81b5-69221118bbb9" config-ref="File_Config_Mule_Home_cFileWorkingDirectory" directoryPath='#[attributes.queryParams.path default ""]' recursive="#[ attributes.queryParams.recursive default true ]" matcher="#[payload]">
 		</file:list>
-		<logger level="INFO" doc:name="log server.timeZone" doc:id="7923693c-ec84-4b75-afe7-f8d940b51448" message="#[Java::invoke('java.util.TimeZone', 'getDisplayName()', server.timeZone, {})]"/>
+		<logger level="INFO" doc:name="log server.timeZone getDisplayName()" doc:id="7923693c-ec84-4b75-afe7-f8d940b51448" message="#[Java::invoke('java.util.TimeZone', 'getDisplayName()', server.timeZone, {})]"/>
+		<logger level="INFO" doc:name="log server.timeZone 	getID()" doc:id="85417f76-1d29-4e81-8aec-aab557d3d5a5" message="#[Java::invoke('java.util.TimeZone', 'getID()', server.timeZone, {})]" />
 		<ee:transform doc:name="payload /dw" doc:id="872100fa-1912-4106-a1db-56b9e4f74662" >
 			<ee:message >
 				<ee:set-payload ><![CDATA[%dw 2.0
 output application/dw
+
+import toDateTime from dw::util::Coercions
 import * from dw::core::Strings
 import cFileWorkingDirectory, cleanPath from modules::app
 
+var timezone = Java::invoke(
+	'java.util.TimeZone', 'getID()'
+	, server.timeZone, {}
+)
+fun convertDate(d: DateTime) = do {
+	d as String { format: ''}
+}
 ---
 payload.*attributes map ((item, index) -> {
 	name: (	item.name default item.fileName	),
@@ -54,9 +64,12 @@ payload.*attributes map ((item, index) -> {
 	directory: item.directory,
 	symbolicLink: item.symbolicLink,
 	
-	lastModifiedTime: item.lastModifiedTime as DateTime,
-	lastAccessTime: item.lastAccessTime as DateTime,
-	creationTime: item.creationTime as DateTime,
+	lastModifiedTime: toDateTime(item.lastModifiedTime),
+	lastModifiedTimeServerZone: item.lastModifiedTime as DateTime >> timezone,
+	lastAccessTime: toDateTime(item.lastAccessTime),
+	lastAccessTimeServerZone: item.lastAccessTime as DateTime >> timezone,
+	creationTime: toDateTime(item.creationTime),
+	creationTimeServerZone: item.creationTime as DateTime >> timezone,
 	
 	size: item.size
 }) /** TODO: orderBy */
