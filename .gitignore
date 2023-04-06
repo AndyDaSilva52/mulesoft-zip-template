@@ -6,14 +6,24 @@
 #application-types.xml
 #END: Anypoint Studio Metadata used with `application-types.xml`
 
+
 #END: 
 
+
+
+
 #START: Consulting
+
+# Configuration File (YAML) local following Mule Development Standards
+#config-local.yaml
+#config-secure-local.yaml
 
 reports/ # Reports from MUnit
 .settings/org.mulesoft.exportwizardsettings.prefs # Studio Export Wizard
 
 #END: Consulting
+
+
 
 #START: MuleSoft Documentation (docs.mulesoft.com)
 # Reference: https://docs.mulesoft.com/mule-runtime/3.7/preparing-a-gitignore-file
@@ -115,6 +125,9 @@ src/main/resources/META-INF/MANIFEST.MF
 /bin/
 
 #END: mule/.gitignore (github.com)
+
+
+
 
 
 # ------------------------------------------------------------------------------ #

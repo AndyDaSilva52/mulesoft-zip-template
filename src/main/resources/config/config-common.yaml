@@ -8,3 +8,4 @@ status:
   key: "JOB_STATUS"
   runnning: "RUNNING"
   complete: "COMPLETE"
+  success: "SUCCESS"
