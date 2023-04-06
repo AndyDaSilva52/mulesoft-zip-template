@@ -15,8 +15,8 @@
 #START: Consulting
 
 # Configuration File (YAML) local following Mule Development Standards
-#config-local.yaml
-#config-secure-local.yaml
+config-local.yaml
+config-secure-local.yaml
 
 reports/ # Reports from MUnit
 .settings/org.mulesoft.exportwizardsettings.prefs # Studio Export Wizard
