@@ -3,10 +3,20 @@ title: zip-template
 description: It show some examples of working with zip files.
 baseUri: http://localhost:8081/
 
+resourceTypes:
+  healthCheck: !include fragments/health_check_pattern/main.raml 
+
 uses:
   traits: library/traits.raml
 #  resourceTypes: library/resourceTypes.raml 
   types: library/types.raml
+
+/info:
+  get:
+    
+
+/health:
+  type: healthCheck
 
 /mule-home:
   get:
@@ -33,6 +43,7 @@ uses:
       displayName: Compress using Mule Compression Module
       description: |
         
+      is: [ traits.query-params-name ]
       responses: 
         200:
           body:
@@ -42,6 +53,7 @@ uses:
     get:
       displayName: Decompress using Mule Compression Module
       description:
+      is: [ traits.query-params-zip ]
       responses: 
         200:
           body: 
@@ -56,6 +68,7 @@ uses:
           "fileName": "fileContent"
         }
         ```
+      is: [ traits.query-params-zip ]
       responses:
         200:
           body:
@@ -63,7 +76,8 @@ uses:
 
   /extract:
     get:
-      displayName: Archive using Mule Compression Module
+      displayName: Extract using Mule Compression Module
+      is: [ traits.query-params-name ]
       responses:
         200:
           body:
@@ -71,11 +85,11 @@ uses:
 
   /zip:
     get:
-      displayName: Zip using Java Class
+      displayName: Archive a Zip file using Java Class
   
   /unzip:
     get:
-      displayName: Unzip using Java Class
+      displayName: Extract a Zip file using Java Class
   
   /append:
     get:
@@ -93,11 +107,3 @@ uses:
             application/json:
             
 
-/healthcheck:
-  displayName: Health Check API
-  get:
-    displayName: Healt Check API
-    responses:
-      200:
-        body:
-          application/json:

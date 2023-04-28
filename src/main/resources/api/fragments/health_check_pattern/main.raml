@@ -1,0 +1,33 @@
+#%RAML 1.0 ResourceType
+
+get:
+  displayName: Health Check
+  description: Reply with a health check of the API and optionally checks underlying services.
+  responses:
+    200:
+      body:
+        application/json:
+          type: !include dataTypes/model.raml
+          examples: 
+            Example: !include examples/example.raml
+    400:
+      description: Bad Request
+      body:
+        application/json:
+          type: !include dataTypes/error.raml
+    408:
+      description: Request Timeout
+      body:
+        application/json:
+          type: !include dataTypes/error.raml
+    500:
+      description: Internal Server Error
+      body:
+        application/json:
+          type: !include dataTypes/error.raml
+    503:
+      description: Service Unavailable
+      body:
+        application/json:
+          type: !include dataTypes/error.raml
+      

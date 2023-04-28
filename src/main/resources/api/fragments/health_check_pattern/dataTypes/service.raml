@@ -1,0 +1,14 @@
+#%RAML 1.0 DataType
+
+type: object
+properties:
+  name:
+    description: The name of the service.
+    type: string
+  description?:
+    description: Details about the service.
+    type: string
+  data?:
+    description: Array of Key-Value pairs with info or metrics about the service.
+    type: array
+    items: !include data.raml
