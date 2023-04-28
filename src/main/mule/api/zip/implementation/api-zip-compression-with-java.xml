@@ -14,7 +14,6 @@ http://www.mulesoft.org/schema/mule/java http://www.mulesoft.org/schema/mule/jav
 	<sub-flow
 		name="api-zip-compression-with-java-entries-subflow"
 		doc:id="ce604326-18a2-4527-9681-56a67d3a4cc3">
-
 		<ee:transform
 			doc:name="Set var zip"
 			doc:id="8282a793-688b-4652-9eb3-310069ac1862">
@@ -29,7 +28,6 @@ modules::app::cFileWorkingDirectory
 ]]></ee:set-variable>
 			</ee:variables>
 		</ee:transform>
-		
 		<ee:transform
 			doc:name="Set payload /java - Args for Java Class"
 			doc:id="84dd68f0-b350-470b-9218-62c09243fbd8">
@@ -43,15 +41,30 @@ output application/java
 ]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
+		<try
+			doc:name="Try"
+			doc:id="07251869-ce61-4823-a915-ce0bc0797f63">
+			<java:invoke-static
+				doc:name="Invoke static org.mulesoft.common.ZipUtility.getZipFileList(String file) &#10;&#10;  (getZipFileList(java.lang.String))"
+				doc:id="0cf07f1e-774f-4926-886c-f436be26aeeb"
+				class="org.mulesoft.common.ZipUtility"
+				method="getZipFileList(java.lang.String)">
+				<java:args><![CDATA[#[payload]]]></java:args>
+			</java:invoke-static>
+
+			<error-handler>
+				<on-error-continue
+					enableNotifications="true"
+					logException="true"
+					doc:name="On Error Continue"
+					doc:id="d19baa02-e96d-4399-9181-92d767364f27"
+					when="#[ Java::isCausedBy(error.cause, 'java.lang.IllegalArgumentException') ]">
+<!-- [STUDIO:"Raise error"]					<raise-error doc:name="Raise error" doc:id="4dde2410-40fd-42e2-8c93-069c6d5a5357" /> [STUDIO] -->
+				</on-error-continue>
+			</error-handler>
+		</try>
 		
-		<java:invoke-static
-			doc:name="Invoke static org.mulesoft.common.ZipUtility.getZipFileList(String file) &#10;&#10;  (getZipFileList(java.lang.String))"
-			doc:id="0cf07f1e-774f-4926-886c-f436be26aeeb"
-			class="org.mulesoft.common.ZipUtility"
-			method="getZipFileList(java.lang.String)">
-			<java:args><![CDATA[#[payload]]]></java:args>
-		</java:invoke-static>
-		
+<!-- [STUDIO:" TODO Caso não encontre o Arquivo, apresentar erro!"]		<logger level="INFO" doc:name=" TODO Caso não encontre o Arquivo, apresentar erro!" doc:id="2bb19f22-684c-4c94-9f18-e816d3fdd020" /> [STUDIO] -->
 		<ee:transform
 			doc:name="Set payload /json Response"
 			doc:id="f0e4fbf1-9453-4b75-87da-2c84b6fa2fc7">
@@ -69,20 +82,14 @@ import cleanPath from modules::app
 ]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
-		
 		<logger
 			level="INFO"
 			doc:name="Logger"
-			doc:id="048030e0-5065-470d-a448-56f9858cae20" />
-			
+			doc:id="048030e0-5065-470d-a448-56f9858cae20"/>
 	</sub-flow>
-	
-	
-	
 	<sub-flow
 		name="api-zip-compression-with-java-zip-subflow"
 		doc:id="7cd9b468-a8e6-4ed5-a387-6a73e256d83a">
-		
 		<ee:transform
 			doc:name="Set payload /java - Args for Java Class"
 			doc:id="05cdae77-305c-4398-a465-65976748cd73">
@@ -96,7 +103,6 @@ output application/java
 }]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
-		
 		<java:invoke-static
 			doc:name="Invoke static org.mulesoft.common.ZipUtility.zip(String[] files, String destZipFile) &#10;&#10; (zip(java.lang.String[],java.lang.String))"
 			doc:id="0ae4dc65-741c-4dce-a6a7-fd0377a6388d"
@@ -104,11 +110,7 @@ output application/java
 			method="zip(java.lang.String[],java.lang.String)">
 			<java:args><![CDATA[#[payload]]]></java:args>
 		</java:invoke-static>
-		
 	</sub-flow>
-	
-	
-	
 	<sub-flow
 		name="api-zip-compression-with-java-append-subflow"
 		doc:id="e7cef1a6-cea4-4168-98dc-a11db8843e45">
@@ -125,7 +127,6 @@ output application/java
 }]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
-		
 		<java:invoke-static
 			doc:name="Invoke static org.mulesoft.common.ZipUtility.addFilesToExisintgZip(String zipFile, String[] files) &#10;&#10; (addFilesToExisintgZip(java.lang.String,java.lang.String[]))"
 			doc:id="8dc9f01b-4efc-41ad-bec6-a7f20263e46d"
@@ -133,13 +134,8 @@ output application/java
 			method="addFilesToExistingZip(java.lang.String,java.lang.String[])">
 			<java:args><![CDATA[#[payload]]]></java:args>
 		</java:invoke-static>
-		
 	</sub-flow>
-	
-	
-	
 	<sub-flow
-	
 		name="api-zip-compression-with-java-unzip-subflow"
 		doc:id="b7a83807-b046-450b-b026-49c7892ebfc9">
 		<ee:transform
@@ -155,7 +151,6 @@ output application/java
 }]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
-		
 		<java:invoke-static
 			doc:name="Invoke static org.mulesoft.common.ZipUtility.unZipFiles(String zipFile, String outputFolder) &#10;&#10; (unZipFiles(java.lang.String,java.lang.String))"
 			doc:id="4f769440-2a40-4e76-8937-5c5d11759d7c"
@@ -163,6 +158,5 @@ output application/java
 			method="unZipFiles(java.lang.String,java.lang.String)">
 			<java:args><![CDATA[#[payload]]]></java:args>
 		</java:invoke-static>
-		
 	</sub-flow>
 </mule>

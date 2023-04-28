@@ -77,7 +77,7 @@ http://www.mulesoft.org/schema/mule/tls http://www.mulesoft.org/schema/mule/tls/
 		doc:name="Configuration"
 		doc:id="0050e500-dc2c-4394-9dce-ebf8c3805b62"
 		doc:description="zip-api-global-error-global"
-		defaultErrorHandler-ref="api-zip-global-error-handler"/>
+		defaultErrorHandler-ref="api-zip-error-handler-global"/>
 
 
 	<configuration-properties

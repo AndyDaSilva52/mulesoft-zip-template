@@ -1,23 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<mule xmlns:file="http://www.mulesoft.org/schema/mule/file" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd 
-http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd">
+<mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:file="http://www.mulesoft.org/schema/mule/file" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd  http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd">
     <!--  -->
     <!--  -->
     <!--  -->
     <flow name="api-zip-main">
         <http:listener config-ref="api-zip-httpListenerConfig" path="/api/*">
             <http:response statusCode="#[vars.httpStatus default 200]">
-                <http:headers>#[vars.outboundHeaders default {}]</http:headers>
+                <http:headers><![CDATA[#[var keyCorrelationId = 'X-Correlation-ID'
+---
+((vars.outboundHeaders
+    default {}) 
+    filterObject ( lower($$) ~= keyCorrelationId )) 
+++ { (keyCorrelationId): correlationId }]]]></http:headers>
             </http:response>
             <http:error-response statusCode="#[vars.httpStatus default 500]">
-                <http:body>#[payload]</http:body>
-                <http:headers>#[vars.outboundHeaders default {}]</http:headers>
+                <http:body><![CDATA[#[payload]]]></http:body>
+                <http:headers><![CDATA[#[var keyCorrelationId = 'X-Correlation-ID'
+---
+((vars.outboundHeaders
+    default {}) 
+    filterObject ( lower($$) ~= keyCorrelationId )) 
+++ { (keyCorrelationId): correlationId }]]]></http:headers>
             </http:error-response>
         </http:listener>
         <!--  -->
         <apikit:router config-ref="api-zip-config" />
-		<flow-ref doc:name="Flow Ref Set outboundHeaders" doc:id="fe1a4159-326e-4b54-be43-b682b3e44b6a" name="common-outboundHeaders-subflow" />
-		<error-handler ref="api-zip-error-handler" />
+        <!--  -->
     </flow>
     <!--  -->
     <!--  -->
@@ -33,57 +41,167 @@ http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/fil
             </http:error-response>
         </http:listener>
         <apikit:console config-ref="api-zip-config" />
-		<error-handler ref="api-zip-error-handler" />
     </flow>
     <!--  -->
     <!--  -->
     <!--  -->
-    <flow name="get:\healthcheck:api-zip-config">
-        <logger level="TRACE" message="get:\healthcheck:api-zip-config" doc:name="Logger TRACE"/>
+    <flow name="get:\info:api-zip-config">
+        <logger level="INFO" message="get:\info:api-zip-config" />
+		<ee:transform doc:name="payload /json ( info )" doc:id="6a70ea76-519b-42b0-b2df-6ff0d3a068ff" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+import * from dw::Runtime
+
+output application/json skipNullOn="everywhere"
+---
+{
+	app: {
+		env: Mule::p('env'),
+		name: Mule::p('api.name'),
+		version: Mule::p('api.version'),
+		id: Mule::p('api.id')
+	},
+	system: {
+		name: Mule::p('os.name'),
+		version: Mule::p('os.version'),
+		arch: Mule::p('os.arch'),
+		//availableCoreProcessors: Java::invoke('Runtime', 'getRuntime().availableProcessors()', vars.availableCoreProcessors, {})
+	},
+	memory: {
+		total: null //Java::invoke('Runtime.getRuntime()', 'totalMemory()', vars.temp, {})
+	},
+	props: props()
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
     </flow>
-    <flow name="get:\mule-home:api-zip-config">
-        <logger level="TRACE" message="get:\mule-home:api-zip-config" doc:name="Logger TRACE"/>
+	<flow name="get:\health:api-zip-config">
+        <logger level="INFO" message="get:\health:api-zip-config" />
+    </flow>
+	<flow name="get:\mule-home:api-zip-config">
+        <logger level="TRACE" message="get:\mule-home:api-zip-config" doc:name="Logger TRACE" />
         <flow-ref doc:name="Flow Reference API Zip - File - Search MULE_HOME" doc:id="2a968766-78a9-472a-944e-454e5d6617a6" name="api-zip-file-mule-home-search-subflow" />
         <ee:transform doc:name="payload /json" doc:id="156542ea-835c-4b81-8ade-57ffa6bc5b3c">
             <ee:message>
                 <ee:set-payload><![CDATA[%dw 2.0
 output application/json
 ---
-payload
-]]></ee:set-payload>
+payload]]></ee:set-payload>
             </ee:message>
         </ee:transform>
     </flow>
 	<flow name="get:\zip\compress:api-zip-config">
-        <logger level="TRACE" message="get:\zip\compress:api-zip-config" doc:name="Logger TRACE"/>
-		<flow-ref doc:name="Flow Ref API Zip - Compression - Operation Compress" doc:id="f8b9860b-4b16-47b0-9377-0bf90a80785e" name="api-zip-compression-with-mule-compress-subflow"/>
+        <logger level="TRACE" message="get:\zip\compress:api-zip-config" doc:name="Logger TRACE" />
+        <ee:transform doc:name="Set variable name" doc:id="a3375e1a-d8ab-430c-ae17-418b22c89f45">
+            <ee:message />
+            <ee:variables>
+                <ee:set-variable variableName="name"><![CDATA[%dw 2.0
+output application/java
+---
+attributes.queryParams.name default "data.csv"]]></ee:set-variable>
+            </ee:variables>
+        </ee:transform>
+        <flow-ref doc:name="Flow Ref API Zip - Compression - Operation Compress" doc:id="f8b9860b-4b16-47b0-9377-0bf90a80785e" name="api-zip-compression-with-mule:compress-subflow" />
+        <ee:transform doc:name="payload /json" doc:id="4a90a188-7cf9-4090-a054-4d054eac3bf7">
+            <ee:message>
+                <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+            </ee:message>
+        </ee:transform>
     </flow>
     <flow name="get:\zip\decompress:api-zip-config">
-        <logger level="TRACE" message="get:\zip\decompress:api-zip-config" doc:name="Logger TRACE"/>
-		<flow-ref doc:name="Flow Ref API Zip - Compression - Operation Decompress" doc:id="2cd60cdd-9766-4d8a-9f8d-2b375a904873" name="api-zip-compression-with-mule-decompress-subflow"/>
+        <logger level="TRACE" message="get:\zip\decompress:api-zip-config" doc:name="Logger TRACE" />
+        <ee:transform doc:name="Set variable name" doc:id="22f75af0-1ec8-4796-ab49-ba8bee77533e">
+            <ee:message />
+            <ee:variables>
+                <ee:set-variable variableName="name"><![CDATA[%dw 2.0
+output application/java
+---
+attributes.queryParams.name default "data.csv.zip"]]></ee:set-variable>
+            </ee:variables>
+        </ee:transform>
+        <flow-ref doc:name="Flow Ref API Zip - Compression - Operation Decompress" doc:id="2cd60cdd-9766-4d8a-9f8d-2b375a904873" name="api-zip-compression-with-mule:decompress-subflow" />
+        <ee:transform doc:name="payload /json" doc:id="b1939c8e-4b1d-44a4-95ea-4169a4b1db42">
+            <ee:message>
+                <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+            </ee:message>
+        </ee:transform>
     </flow>
     <flow name="get:\zip\archive:api-zip-config">
-        <logger level="TRACE" message="get:\zip\archive:api-zip-config" doc:name="Logger TRACE"/>
-		<flow-ref doc:name="Flow Ref API Zip - Compression - Operation Archive" doc:id="dad51b1e-9e50-47ad-88f4-9db883884bb8" name="api-zip-compression-with-mule-archive-subflow"/>
+        <logger level="TRACE" message="get:\zip\archive:api-zip-config" doc:name="Logger TRACE" />
+        <flow-ref doc:name="Flow Ref API Zip - Compression - Operation Archive" doc:id="dad51b1e-9e50-47ad-88f4-9db883884bb8" name="api-zip-compression-with-mule:archive-subflow" />
+        <ee:transform doc:name="payload /json" doc:id="b7126989-0cde-436d-8bcf-6b2b66e1ddb2">
+            <ee:message>
+                <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+            </ee:message>
+        </ee:transform>
     </flow>
-	<flow name="get:\zip\extract:api-zip-config">
-        <logger level="TRACE" message="get:\zip\extract:api-zip-config" doc:name="Logger TRACE"/>
-		<flow-ref doc:name="Flow Ref API Zip - Compression - Operation Extract" doc:id="46613795-e0b6-4c27-8c54-7e7172116d6a" name="api-zip-compression-with-mule-extract-subflow"/>
+    <flow name="get:\zip\extract:api-zip-config">
+        <logger level="TRACE" message="get:\zip\extract:api-zip-config" doc:name="Logger TRACE" />
+        <flow-ref doc:name="Flow Ref API Zip - Compression - Operation Extract" doc:id="46613795-e0b6-4c27-8c54-7e7172116d6a" name="api-zip-compression-with-mule:extract-subflow" />
+        <ee:transform doc:name="payload /json" doc:id="fd8bc35c-2a12-44a5-bc9f-48a6079c12d9">
+            <ee:message>
+                <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+            </ee:message>
+        </ee:transform>
     </flow>
-    <flow name="get:\zip\entries:api-zip-config">
-        <logger level="TRACE" message="get:\zip\entries:api-zip-config" doc:name="Logger TRACE"/>
+	<flow name="get:\zip\entries:api-zip-config">
+        <logger level="TRACE" message="get:\zip\entries:api-zip-config" doc:name="Logger TRACE" />
         <flow-ref doc:name="Flow Ref API Zip - Java - Method Entries" doc:id="163c57f7-225a-49cf-a0ab-71814b125502" name="api-zip-compression-with-java-entries-subflow" />
+        <ee:transform doc:name="payload /json" doc:id="d4f70576-86d2-45dd-ad2b-3ad3f279e1c4">
+            <ee:message>
+                <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+            </ee:message>
+        </ee:transform>
     </flow>
     <flow name="get:\zip\zip:api-zip-config">
-        <logger level="TRACE" message="get:\zip\zip:api-zip-config" doc:name="Logger TRACE"/>
-		<flow-ref doc:name="Flow Ref API Zip - Java - Method Zip" doc:id="b76eb0a4-a43d-4bcb-ab73-6531f3ff706e" name="api-zip-compression-with-java-zip-subflow"/>
+        <logger level="TRACE" message="get:\zip\zip:api-zip-config" doc:name="Logger TRACE" />
+        <flow-ref doc:name="Flow Ref API Zip - Java - Method Zip" doc:id="b76eb0a4-a43d-4bcb-ab73-6531f3ff706e" name="api-zip-compression-with-java-zip-subflow" />
+        <ee:transform doc:name="payload /json" doc:id="872cc323-3ead-462d-b05e-36f9866d80ab">
+            <ee:message>
+                <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+            </ee:message>
+        </ee:transform>
     </flow>
     <flow name="get:\zip\append:api-zip-config">
-        <logger level="TRACE" message="get:\zip\append:api-zip-config" doc:name="Logger TRACE"/>
-		<flow-ref doc:name="Flow Ref API Zip - Java - Method Append Files to Existing Zip" doc:id="afe1b9c2-b36a-488e-b9e9-939ace583f2d" name="api-zip-compression-with-java-append-subflow"/>
+        <logger level="TRACE" message="get:\zip\append:api-zip-config" doc:name="Logger TRACE" />
+        <flow-ref doc:name="Flow Ref API Zip - Java - Method Append Files to Existing Zip" doc:id="afe1b9c2-b36a-488e-b9e9-939ace583f2d" name="api-zip-compression-with-java-append-subflow" />
+        <ee:transform doc:name="payload /json" doc:id="1343f5ad-e0e8-404b-9619-5ce89ca4b575">
+            <ee:message>
+                <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+            </ee:message>
+        </ee:transform>
     </flow>
     <flow name="get:\zip\unzip:api-zip-config">
-        <logger level="TRACE" message="get:\zip\unzip:api-zip-config" doc:name="Logger TRACE"/>
-		<flow-ref doc:name="Flow Ref API Zip - Java - Method Unzip" doc:id="580607f5-f5c1-4353-9f66-ee77f893b6e4" name="api-zip-compression-with-java-unzip-subflow"/>
+        <logger level="TRACE" message="get:\zip\unzip:api-zip-config" doc:name="Logger TRACE" />
+        <flow-ref doc:name="Flow Ref API Zip - Java - Method Unzip" doc:id="580607f5-f5c1-4353-9f66-ee77f893b6e4" name="api-zip-compression-with-java-unzip-subflow" />
+        <ee:transform doc:name="payload /json" doc:id="6fef0e88-8b52-4eec-b39b-8d571171d5e7">
+            <ee:message>
+                <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+            </ee:message>
+        </ee:transform>
     </flow>
 </mule>

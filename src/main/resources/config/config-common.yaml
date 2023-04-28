@@ -2,7 +2,7 @@ api:
   name: "mulesoft-zip-template"
   version: "1.0.0"
   logger:
-    package: "org.everymind.templates"
+    package: "org.mulesoft.templates"
     
 status:
   key: "JOB_STATUS"

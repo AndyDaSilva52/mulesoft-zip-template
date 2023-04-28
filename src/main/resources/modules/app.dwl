@@ -13,6 +13,8 @@ var cFileWorkingDirectory = modules::app::cFileMuleHomeData
 var cPathIn = "in/"
 var cPathOut = "out/"
 
+var cStatusSuccess = Mule::p('status.success')
+
 
 /**
 * Describes the `cleanPath` function purpose.

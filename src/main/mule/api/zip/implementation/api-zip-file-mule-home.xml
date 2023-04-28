@@ -50,7 +50,6 @@ output application/java
 ]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
-		
 		<file:list
 			doc:name="List using cWorkingDirectory ( resources/data/* )"
 			doc:id="464dc405-e6a7-497b-81b5-69221118bbb9"
@@ -59,18 +58,17 @@ output application/java
 			recursive="#[ attributes.queryParams.recursive default true ]"
 			matcher="#[payload]">
 		</file:list>
-		
 		<logger
 			level="INFO"
 			doc:name="log server.timeZone getDisplayName()"
 			doc:id="7923693c-ec84-4b75-afe7-f8d940b51448"
-			message="#[Java::invoke('java.util.TimeZone', 'getDisplayName()', server.timeZone, {})]" />
+			message="#[Java::invoke('java.util.TimeZone', 'getDisplayName()', server.timeZone, {})]"/>
 
 		<logger
 			level="INFO"
 			doc:name="log server.timeZone 	getID()"
 			doc:id="85417f76-1d29-4e81-8aec-aab557d3d5a5"
-			message="#[Java::invoke('java.util.TimeZone', 'getID()', server.timeZone, {})]" />
+			message="#[Java::invoke('java.util.TimeZone', 'getID()', server.timeZone, {})]"/>
 
 		<ee:transform
 			doc:name="payload /dw"

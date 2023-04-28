@@ -13,81 +13,134 @@ http://www.mulesoft.org/schema/mule/compression http://www.mulesoft.org/schema/m
 http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
 
 	<sub-flow
-		name="api-zip-compression-with-mule-compress-subflow"
+		name="api-zip-compression-with-mule:compress-subflow"
 		doc:id="eea1e170-35d7-4f56-b594-0146b8f25866">
 
 		<logger
 			level="INFO"
 			doc:name="Doc:"
-			doc:id="ba8eb813-bd84-4158-b3aa-67c4c5fc8d0e" />
+			doc:id="ba8eb813-bd84-4158-b3aa-67c4c5fc8d0e"/>
 
 		<file:read
 			doc:name="Read File"
 			doc:id="bf057183-2c23-4739-82e1-991ccc3fd8b3"
 			config-ref="File_Config_Mule_Home_cFileWorkingDirectory"
-			path='#[modules::app::cPathIn ++ "data.csv"]'
-			outputMimeType="application/csv; streaming=true; ignoreemptyline=true" />
+			path='#[modules::app::cPathIn ++ vars.name]'
+			outputMimeType="application/csv; streaming=true; ignoreemptyline=true"/>
 
 		<compression:compress
 			doc:name="Compress using Zip Compressor"
 			doc:id="d5edc5d6-4437-4218-8a78-ef0058201876">
 			<compression:compressor>
-				<compression:zip-compressor />
+				<compression:zip-compressor/>
 			</compression:compressor>
 		</compression:compress>
 
+		<set-variable
+			value="#[vars.name ++ '.zip']"
+			doc:name="Set Variable name (Zip)"
+			doc:id="d45286f3-8651-4bd7-bd9a-9fa93da78e6e"
+			variableName="name"/>
 		<file:write
 			doc:name="Write"
 			doc:id="c50d92db-ef6a-43b9-8447-41469a6576d8"
 			config-ref="File_Config_Mule_Home_cFileWorkingDirectory"
-			path="#[modules::app::cPathOut]" />
+			path="#[modules::app::cPathOut ++ '/' ++ vars.name]"/>
+		<ee:transform
+			doc:name="payload /java"
+			doc:id="e4568ebe-b6ee-4995-aeb2-e7cae4bfdc57">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+import toBase64 from dw::core::Binaries
+output application/java
+---
+{
+	name: vars.name,
+	message: modules::app::cStatusSuccess ,
+	dataBase64: toBase64(payload)
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
 
 	</sub-flow>
 
 
 
 	<sub-flow
-		name="api-zip-compression-with-mule-decompress-subflow"
+		name="api-zip-compression-with-mule:decompress-subflow"
 		doc:id="c747aadc-f36f-49cf-bad1-e5881a48829d">
 
 		<logger
 			level="INFO"
 			doc:name="Doc:"
-			doc:id="7a3355eb-dae7-451f-8fea-039cf897e119" />
+			doc:id="7a3355eb-dae7-451f-8fea-039cf897e119"/>
 
 		<file:read
 			doc:name="Read Compressed File"
 			doc:id="49c9ec18-b7b4-439a-b7c8-266f7b243969"
 			config-ref="File_Config_Mule_Home_cFileWorkingDirectory"
-			path='#[modules::app::cPathOut ++ "data.zip"]' />
+			path='#[modules::app::cPathOut ++ vars.name]'/>
 
 		<compression:decompress
 			doc:name="Decompress using Zip Decompressor"
 			doc:id="0102003e-ff29-4c71-b753-b47f86b91710">
 			<compression:decompressor>
-				<compression:zip-decompressor />
+				<compression:zip-decompressor/>
 			</compression:decompressor>
 		</compression:decompress>
 
+		<set-variable
+			value='#[(vars.name replace ".zip" with "")]'
+			doc:name="Set Variable name (Zip)"
+			doc:id="1b2f09bc-4174-484b-864f-c6b32a6e92c8"
+			variableName="name"/>
 		<file:write
 			doc:name="Write"
 			doc:id="06e2d59b-52e8-47fc-9062-970f3f4df61b"
 			config-ref="File_Config_Mule_Home_cFileWorkingDirectory"
-			path="#[modules::app::cPathOut]" />
+			path='#[modules::app::cPathOut ++ vars.name]'/>
+		<ee:transform
+			doc:name="payload /java"
+			doc:id="2ff0dd14-a83d-4ef1-a45e-0bbf5e1cba63">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+import toBase64 from dw::core::Binaries
+output application/java
+---
+{
+	name: vars.name,
+	message: modules::app::cStatusSuccess ,
+	dataBase64: toBase64(payload)
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
 
 	</sub-flow>
 
 
 
 	<sub-flow
-		name="api-zip-compression-with-mule-archive-subflow"
+		name="api-zip-compression-with-mule:archive-subflow"
 		doc:id="4e47dc33-6f01-4694-9272-8d860cb5d662">
 
 		<logger
 			level="INFO"
 			doc:name="Doc:"
-			doc:id="07e6ccb7-a100-49c3-9c51-48a2ad67417d" />
-
+			doc:id="07e6ccb7-a100-49c3-9c51-48a2ad67417d"/>
+		<ee:transform
+			doc:name="DW Set variable name"
+			doc:id="1939ded7-634a-49ff-9137-95a737ae184b">
+			<ee:message>
+			</ee:message>
+			<ee:variables>
+				<ee:set-variable variableName="name"><![CDATA[%dw 2.0
+output application/java
+---
+if ( !isEmpty(attributes.queryParams.zip) )
+	(correlationId ++ ".zip")
+else attributes.queryParams.zip]]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
 		<ee:transform
 			doc:name="DW Set variable path"
 			doc:id="acaa15c5-7438-4353-a102-be41478bbebc">
@@ -98,7 +151,7 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
 output application/java
 ---
 modules::app::cleanPath(
-	modules::app::cPathOut ++ "/" ++ correlationId ++ ".zip"
+	modules::app::cPathOut ++ "/" ++ vars.name
 )]]></ee:set-variable>
 			</ee:variables>
 		</ee:transform>
@@ -133,13 +186,12 @@ output application/java
 ]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
-
 		<file:list
 			doc:name="List All Files to Zip"
 			doc:id="cbb3d441-6bb9-47c7-9623-66cbbc8ce0da"
 			config-ref="File_Config_Mule_Home_cFileWorkingDirectory"
 			directoryPath="#[modules::app::cPathIn]"
-			matcher="#[payload]" />
+			matcher="#[payload]"/>
 
 		<ee:transform
 			doc:name="DW payload of Mule Message TO Expect Input for Archive"
@@ -166,7 +218,7 @@ payload
 			doc:name="Archive"
 			doc:id="265d5b20-9650-4b24-99bf-2bc520280b77">
 			<compression:archiver>
-				<compression:zip-archiver />
+				<compression:zip-archiver/>
 			</compression:archiver>
 		</compression:archive>
 
@@ -174,20 +226,20 @@ payload
 			doc:name="Write Zip File TO data/out/correlationId"
 			doc:id="9f5009ad-6ca7-4ee0-aae5-7bdefa678470"
 			config-ref="File_Config_Mule_Home_cFileWorkingDirectory"
-			path="#[vars.path]" />
+			path="#[vars.path]"/>
 
 	</sub-flow>
 
 
 
 	<sub-flow
-		name="api-zip-compression-with-mule-extract-subflow"
+		name="api-zip-compression-with-mule:extract-subflow"
 		doc:id="75a6b2b9-851c-4d57-93e2-7aa99911e774">
 
 		<logger
 			level="INFO"
 			doc:name="Doc:"
-			doc:id="b95d78c8-f087-4b5d-a663-8ec520b4ef77" />
+			doc:id="b95d78c8-f087-4b5d-a663-8ec520b4ef77"/>
 
 		<ee:transform
 			doc:name="DW Set variable props"
@@ -209,13 +261,13 @@ output application/java
 			doc:name="Read Zip File"
 			doc:id="ff17e40b-84cb-4a60-9a22-50bc70a5a49c"
 			config-ref="File_Config_Mule_Home_cFileWorkingDirectory"
-			path='#[vars.props.path ++ "/" ++ vars.props.name]' />
+			path='#[vars.props.path ++ "/" ++ vars.props.name]'/>
 
 		<compression:extract
 			doc:name="Extract"
 			doc:id="ecdd50f2-1f9f-4d81-bf3d-23db1d729706">
 			<compression:extractor>
-				<compression:zip-extractor />
+				<compression:zip-extractor/>
 			</compression:extractor>
 		</compression:extract>
 

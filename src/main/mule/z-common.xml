@@ -20,10 +20,12 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
 			<ee:variables>
 				<ee:set-variable variableName="outboundHeaders"><![CDATA[%dw 2.0
 output application/java
+var keyCorrelationId = 'X-Correlation-ID'
 ---
-(vars.outboundHeaders default {}) ++ {
-	'X-Correlation-ID': correlationId
-}
+((vars.outboundHeaders
+    default {}) 
+    filterObject ( lower($$) ~= keyCorrelationId )) 
+++ { (keyCorrelationId): correlationId }
 ]]></ee:set-variable>
 			</ee:variables>
 		</ee:transform>

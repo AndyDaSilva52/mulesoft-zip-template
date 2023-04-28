@@ -1,4 +1,5 @@
-apiId: "0000"
+api: 
+  id: "0000"
 
 https:
   host: "0.0.0.0"
