@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
+	<classpathentry kind="con" path="MULE_LIB/org.mule.modules/mule-apikit-module/1.8.4"/>
+	<classpathentry kind="con" path="MULE_LIB/org.mule.modules/mule-validation-module/2.0.4"/>
 	<classpathentry kind="con" path="MULE_LIB/org.mule.connectors/mule-sockets-connector/1.2.3"/>
 	<classpathentry kind="con" path="MULE_LIB/org.mule.connectors/mule-http-connector/1.7.3"/>
-	<classpathentry kind="con" path="MULE_LIB/org.mule.modules/mule-apikit-module/1.8.1"/>
 	<classpathentry kind="con" path="MULE_LIB/org.mule.modules/mule-tracing-module/1.0.0"/>
 	<classpathentry kind="con" path="MULE_LIB/org.mule.connectors/mule-file-connector/1.5.0"/>
 	<classpathentry kind="con" path="MULE_LIB/org.mule.module/mule-java-module/1.2.10"/>
