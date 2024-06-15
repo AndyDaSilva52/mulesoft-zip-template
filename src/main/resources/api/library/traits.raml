@@ -1,0 +1,30 @@
+#%RAML 1.0 Library
+
+traits:
+  header-x-correlation-id: !include ./traits/header-correlation-id.raml
+
+  query-params-zip:
+    queryParameters:
+      zip:
+        type: string
+        #displayName:
+        required: true
+        examples:
+          "Example": "example.zip"
+
+  # A Query Parameter to choose between using Mule Compression module or Java Class/Package
+  query-params-compression-method:
+    queryParameters:
+      method:
+        type: string
+        enum: ["mule", "java"]
+        default: "mule"
+        required: false
+        displayName: Compression Method
+        description: |
+          The compression method to use. Mule Compression module is used by default.
+          If you want to use Java Class/Package, you can set this parameter to "java".
+        examples:
+          "Mule Compression": "mule"
+          "Java Class/Package": "java"
+

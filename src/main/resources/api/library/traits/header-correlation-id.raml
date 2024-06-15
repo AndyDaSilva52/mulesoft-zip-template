@@ -1,0 +1,8 @@
+#%RAML 1.0 Trait
+# https://github.com/mulesoft-catalyst/reusable-raml-fragments/blob/main/traits/common/correlation-id-trait.raml
+headers:
+  x-correlation-id:
+    required: false
+    type: string
+    description: Unique value to track end to end transaction
+    example: "ec0c8b70-49a5-11ed-8288-02a9c35111b8"

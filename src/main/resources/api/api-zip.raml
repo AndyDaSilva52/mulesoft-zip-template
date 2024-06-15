@@ -1,0 +1,104 @@
+#%RAML 1.0
+title: zip-template
+description: It show some examples of working with zip files.
+baseUri: http://localhost:8081/
+
+uses:
+  traits: library/traits.raml
+
+/health:
+  get:
+    description: Health check
+    responses:
+      200:
+        body:
+          application/json:
+            example: |
+              {
+                "status": "UP"
+              }
+
+/files:
+  get:
+    displayName: List All Files
+    description: List all files relative to the app (Mule home) directory whenever the app is deployed.
+    responses:
+      200:
+        body:
+          #application/xml:
+
+          #application/yaml:
+
+          application/json:
+            type: array
+            items:
+              type: object
+              properties:
+                path:
+                  type: string
+
+#  post:
+#    displayName: Create a File in Mule Home
+#    description: Create a file in the Mule home directory
+
+#  delete:
+#    displayName: Delete a File in Mule Home
+#    description: Delete a file in the Mule home directory
+
+  /download:
+    get:
+      displayName: Download a File
+      description: Download a file relative to the app (Mule home) directory whenever the app is deployed.
+
+
+/zip:
+  /compress:
+    post:
+      displayName: Compress a File
+      description: Compress a file relative to the app (Mule home) directory whenever the app is deployed.
+
+  /decompress:
+    post:
+      displayName: Decompress a File
+      description: Decompress a file relative to the app (Mule home) directory whenever the app is deployed.
+
+  /archive:
+    post:
+      displayName: Archive a File
+      description: Archive a file relative to the app (Mule home) directory whenever the app is deployed.
+      is:
+      - traits.query-params-compression-method
+      queryParameters:
+        append:
+          type: boolean
+          default: false
+          required: false
+          displayName: Append
+          description: |
+            If true, the file will be appended to the archive. If false, the file will be added as a new entry.
+
+  /extract:
+    post:
+      displayName: Extract a File
+      description: Extract a file relative to the app (Mule home) directory whenever the app is deployed.
+
+  /entries:
+    get:
+      displayName: List Entries
+      description: List all entries in a zip file.
+      responses:
+        200:
+          body:
+            application/json:
+              type: array
+              items:
+                type: object
+                properties:
+                  name:
+                    type: string
+                  size:
+                    type: number
+                  date:
+                    type: string
+                  path:
+                    type: string
