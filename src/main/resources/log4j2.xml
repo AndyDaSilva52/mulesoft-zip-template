@@ -5,7 +5,7 @@
         There are several more you can find in the documentation.
         Besides this log4j configuration, you can also use Java VM environment variables
         to enable other logs like network (-Djavax.net.debug=ssl or all) and
-        Garbage Collector (-XX:+PrintGC). These will be append to the console, so you will 
+        Garbage Collector (-XX:+PrintGC). These will be append to the console, so you will
         see them in the mule_ee.log file. -->
 
     <Appenders>
