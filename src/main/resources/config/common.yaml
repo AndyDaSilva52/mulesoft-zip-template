@@ -1,0 +1,10 @@
+api:
+  name: "mulesoft-zip-template"
+  version: "1.0.0"
+  logger:
+    package: "com.mycompany"
+
+status:
+  key: "JOB_STATUS"
+  runnning: "RUNNING"
+  complete: "COMPLETE"

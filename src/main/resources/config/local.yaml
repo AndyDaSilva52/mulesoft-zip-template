@@ -1,0 +1,14 @@
+apiId: "0000"
+
+https:
+  host: "0.0.0.0"
+  port: "8081"
+
+app:
+  data:
+    secure: "true"
+
+cache:
+  failure:
+    ttl: "60"
+    interval: "30"
