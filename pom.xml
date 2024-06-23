@@ -1,11 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
+
   <groupId>com.mycompany</groupId>
   <artifactId>zip-template</artifactId>
+
   <version>1.0.0</version>
   <packaging>mule-application</packaging>
   <name>zip-template</name>
+
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -13,67 +16,6 @@
     <maven.clean.plugin.version>3.0.0</maven.clean.plugin.version>
     <mule.maven.plugin.version>3.5.4</mule.maven.plugin.version>
   </properties>
-
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-clean-plugin</artifactId>
-        <version>${maven.clean.plugin.version}</version>
-      </plugin>
-      <plugin>
-        <groupId>org.mule.tools.maven</groupId>
-        <artifactId>mule-maven-plugin</artifactId>
-        <version>${mule.maven.plugin.version}</version>
-        <extensions>true</extensions>
-        <configuration>
-                    <classifier>mule-application</classifier>
-                </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.10.1</version>
-        <configuration>
-          <compilerArgs>
-            <args>-parameters</args>
-          </compilerArgs>
-          <target>1.8</target>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
-  <repositories>
-    <repository>
-      <id>anypoint-exchange-v3</id>
-      <name>Anypoint Exchange</name>
-      <url>https://maven.anypoint.mulesoft.com/api/v3/maven</url>
-      <layout>default</layout>
-    </repository>
-    <repository>
-            <id>anypoint-exchange-v2</id>
-            <name>Anypoint Exchange</name>
-            <url>https://maven.anypoint.mulesoft.com/api/v2/maven</url>
-            <layout>default</layout>
-        </repository>
-    <repository>
-      <id>mulesoft-releases</id>
-      <name>MuleSoft Releases Repository</name>
-      <url>https://repository.mulesoft.org/releases/</url>
-      <layout>default</layout>
-    </repository>
-  </repositories>
-  <pluginRepositories>
-    <pluginRepository>
-      <snapshots>
-        <enabled>false</enabled>
-      </snapshots>
-      <id>mulesoft-releases</id>
-      <name>MuleSoft Releases Repository</name>
-      <url>https://repository.mulesoft.org/releases/</url>
-      <layout>default</layout>
-    </pluginRepository>
-  </pluginRepositories>
 
   <dependencies>
     <dependency>
@@ -131,4 +73,85 @@
       <classifier>mule-plugin</classifier>
     </dependency>
   </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-clean-plugin</artifactId>
+        <version>${maven.clean.plugin.version}</version>
+      </plugin>
+      <plugin>
+        <groupId>org.mule.tools.maven</groupId>
+        <artifactId>mule-maven-plugin</artifactId>
+        <version>${mule.maven.plugin.version}</version>
+        <extensions>true</extensions>
+        <configuration>
+          <classifier>mule-application</classifier>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.10.1</version>
+        <configuration>
+          <compilerArgs>
+            <args>-parameters</args>
+          </compilerArgs>
+          <target>1.8</target>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>com.github.ekryd.sortpom</groupId>
+        <artifactId>sortpom-maven-plugin</artifactId>
+        <version>3.0.1</version>
+        <configuration>
+          <createBackupFile>false</createBackupFile>
+          <predefinedSortOrder>custom_1</predefinedSortOrder>
+          <!-- <quiet>true</quiet> -->
+          <sortProperties>false</sortProperties>
+          <sortDependencies>scope,classifier,groupId,artifactId</sortDependencies>
+          <sortExecutions>true</sortExecutions>
+        </configuration>
+        <executions>
+          <execution>
+            <goals>
+              <goal>sort</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+  <repositories>
+    <repository>
+      <id>anypoint-exchange-v3</id>
+      <name>Anypoint Exchange</name>
+      <url>https://maven.anypoint.mulesoft.com/api/v3/maven</url>
+      <layout>default</layout>
+    </repository>
+    <repository>
+      <id>anypoint-exchange-v2</id>
+      <name>Anypoint Exchange</name>
+      <url>https://maven.anypoint.mulesoft.com/api/v2/maven</url>
+      <layout>default</layout>
+    </repository>
+    <repository>
+      <id>mulesoft-releases</id>
+      <name>MuleSoft Releases Repository</name>
+      <url>https://repository.mulesoft.org/releases/</url>
+      <layout>default</layout>
+    </repository>
+  </repositories>
+  <pluginRepositories>
+    <pluginRepository>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+      <id>mulesoft-releases</id>
+      <name>MuleSoft Releases Repository</name>
+      <url>https://repository.mulesoft.org/releases/</url>
+      <layout>default</layout>
+    </pluginRepository>
+  </pluginRepositories>
 </project>
