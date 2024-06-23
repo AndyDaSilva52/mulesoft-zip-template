@@ -27,17 +27,8 @@
         <apikit:console config-ref="api-zip-config"/>
     <error-handler ref="api-zip-error-handler" />
     </flow>
-    <flow name="get:\files\download:api-zip-config">
-        <logger level="INFO" message="get:\files\download:api-zip-config" />
-    </flow>
-    <flow name="get:\zip\entries:api-zip-config">
-        <logger level="INFO" message="get:\zip\entries:api-zip-config" />
-    </flow>
-    <flow name="get:\files:api-zip-config">
-        <logger level="INFO" message="get:\files:api-zip-config" />
-    </flow>
     <flow name="get:\health:api-zip-config">
-        <ee:transform doc:name="Transform Message">
+        <ee:transform doc:name="Response Health">
             <ee:message>
                 <ee:set-payload><![CDATA[%dw 2.0
 output application/json
@@ -48,11 +39,20 @@ output application/json
             </ee:message>
         </ee:transform>
     </flow>
-    <flow name="post:\zip\archive:api-zip-config">
-        <logger level="INFO" message="post:\zip\archive:api-zip-config" />
+  <flow name="get:\files:api-zip-config">
+        <logger level="INFO" message="get:\files:api-zip-config" />
+    </flow>
+  <flow name="get:\files\download:api-zip-config">
+        <logger level="INFO" message="get:\files\download:api-zip-config" />
+    </flow>
+  <flow name="get:\zip\entries:api-zip-config">
+        <logger level="INFO" message="get:\zip\entries:api-zip-config" />
     </flow>
     <flow name="post:\zip\compress:api-zip-config">
         <logger level="INFO" message="post:\zip\compress:api-zip-config" />
+    </flow>
+  <flow name="post:\zip\archive:api-zip-config">
+        <logger level="INFO" message="post:\zip\archive:api-zip-config" />
     </flow>
     <flow name="post:\zip\decompress:api-zip-config">
         <logger level="INFO" message="post:\zip\decompress:api-zip-config" />

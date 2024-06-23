@@ -1,35 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <mule
+	xmlns:secure-properties="http://www.mulesoft.org/schema/mule/secure-properties"
 	xmlns:file="http://www.mulesoft.org/schema/mule/file"
 	xmlns:tls="http://www.mulesoft.org/schema/mule/tls"
-	xmlns:secure-properties="http://www.mulesoft.org/schema/mule/secure-properties"
 	xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit"
 	xmlns:http="http://www.mulesoft.org/schema/mule/http"
 	xmlns="http://www.mulesoft.org/schema/mule/core"
 	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
-
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
-	xsi:schemaLocation="
+	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xsi:schemaLocation="
 http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
 http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/tls http://www.mulesoft.org/schema/mule/tls/current/mule-tls.xsd
 http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd
-	http://www.mulesoft.org/schema/mule/core
-	http://www.mulesoft.org/schema/mule/core/current/mule.xsd
-	http://www.mulesoft.org/schema/mule/http
-	http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
-	http://www.mulesoft.org/schema/mule/mule-apikit
-	http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd
-	http://www.mulesoft.org/schema/mule/ee/core
-	http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
-http://www.mulesoft.org/schema/mule/secure-properties http://www.mulesoftorg/schema/mule/secure-properties/current/mule-secure-properties.xsd
-http://www.mulesoft.org/schema/mule/tls http://www.mulesoft.org/schema/mule/tls/current/mule-tls.xsd">
+http://www.mulesoft.org/schema/mule/secure-properties http://www.mulesoft.org/schema/mule/secure-properties/current/mule-secure-properties.xsd">
 
 	<http:listener-config name="API_Zip_HTTP_Listener_Config">
 		<http:listener-connection
 			host="${https.host}"
-			port="${https.port}" protocol="HTTPS" tlsContext="TLS_Context">
+			port="${https.port}"
+			protocol="HTTPS"
+			tlsContext="TLS_Context">
 		</http:listener-connection>
 	</http:listener-config>
 
@@ -39,14 +32,14 @@ http://www.mulesoft.org/schema/mule/tls http://www.mulesoft.org/schema/mule/tls/
 		doc:id="b2834138-1149-4b21-a21d-f78cb4590bc6"
 		name="mule.env"
 		doc:description="{mule.env}:local"
-		value="local" />
+		value="local"/>
 
 
 	<global-property
 		doc:name="Global Property"
 		doc:id="3e51a9be-3490-48c1-ae27-6f5c8e075dac"
 		name="mule.key"
-		value="1111222233334444" />
+		value="1111222233334444"/>
 
 
 	<secure-properties:config
@@ -55,33 +48,38 @@ http://www.mulesoft.org/schema/mule/tls http://www.mulesoft.org/schema/mule/tls/
 		doc:id="15d499ce-6963-4d9f-84a4-e4840cb3fc16"
 		doc:description="config/secured/${mule.env}.yaml"
 		file="config/${mule.env}-secured.yaml"
-		key="${mule.key}" />
+		key="${mule.key}"/>
 
 
 	<configuration
 		doc:name="Configuration"
 		doc:id="0050e500-dc2c-4394-9dce-ebf8c3805b62"
 		doc:description="zip-api-error-global"
-		defaultErrorHandler-ref="api-zip-error-handler" />
+		defaultErrorHandler-ref="api-zip-error-handler"/>
 
 
 	<configuration-properties
 		doc:name="Configuration properties"
 		doc:id="0854828e-d056-466a-93f6-cc0b16d3ec20"
 		file="config/common.yaml"
-		doc:description="config/common.yaml" />
+		doc:description="config/common.yaml"/>
 
 	<configuration-properties
 		doc:name="Configuration properties"
 		doc:id="e104857e-9be1-417e-b21a-fbbe4249b2e0"
 		doc:description="config/${mule.env}.yaml"
-		file="config/${mule.env}.yaml" />
+		file="config/${mule.env}.yaml"/>
 
 	<tls:context
 		name="TLS_Context"
 		doc:name="TLS Context"
 		doc:id="94c3f8bb-3df3-4e38-b402-9a30eb59d732">
-    <tls:key-store type="jks" path="cert/${mule.env}-sender.jks" alias="${secure::keystore.alias}" keyPassword="${secure::keystore.keyPassword}" password="${secure::keystore.password}" />
+		<tls:key-store
+			type="jks"
+			path="cert/${mule.env}-sender.jks"
+			alias="${secure::keystore.alias}"
+			keyPassword="${secure::keystore.keyPassword}"
+			password="${secure::keystore.password}"/>
 	</tls:context>
 
 
@@ -90,7 +88,7 @@ http://www.mulesoft.org/schema/mule/tls http://www.mulesoft.org/schema/mule/tls/
 		doc:name="File Config"
 		doc:id="f30d9d72-8ccf-497d-ba64-87e41e348a69"
 		doc:description="resources/data">
-		<file:connection workingDir="#[modules::app::cFileMuleHomeData]" />
+		<file:connection workingDir="#[modules::app::cFileMuleHomeData]"/>
 	</file:config>
 
 </mule>
