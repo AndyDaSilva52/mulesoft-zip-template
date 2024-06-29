@@ -52,7 +52,7 @@
         <configuration>
           <createBackupFile>false</createBackupFile>
           <!-- <predefinedSortOrder>recommended_2008_06</predefinedSortOrder> -->
-          <sortOrderFile>config-sortpom.xml</sortOrderFile>
+          <sortOrderFile>${project.basedir}/config-sortpom.xml</sortOrderFile>
           <!-- <quiet>true</quiet> -->
           <sortProperties>false</sortProperties>
           <sortDependencies>type,classifier,scope,groupId,artifactId</sortDependencies>
