@@ -83,8 +83,8 @@
             <include>**/*.xml</include>
             <include>**/*.json</include>
           </includes>
-          <configFile>${project.basedir}/formatter-config-eclipse.xml</configFile>
-          <configXmlFile>${project.basedir}/formatter-config-xml.properties</configXmlFile>
+          <configFile>${project.basedir}/config-formatter-eclipse.xml</configFile>
+          <configXmlFile>${project.basedir}/config-formatter-xml.properties</configXmlFile>
         </configuration>
         <executions>
           <execution>
