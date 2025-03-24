@@ -44,7 +44,17 @@ traits:
         required: false
         examples:
           "Example": "example.zip"
-        
+  
+  query-params-files:
+    queryParameters:
+      files:
+        type: array
+        items:
+          type: string
+          #examples:
+          #  "Example": 
+          #    - "data_example_01.csv"
+          #    - "data_example_02.csv"
   
   responses-200-OK: !include ./traits/responses/200-OK.raml
   

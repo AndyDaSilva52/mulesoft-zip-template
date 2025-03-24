@@ -86,14 +86,22 @@ uses:
   /zip:
     get:
       displayName: Archive a Zip file using Java Class
+      is:
+      - traits.query-params-zip:
+      - traits.query-params-files
   
   /unzip:
     get:
       displayName: Extract a Zip file using Java Class
+      is:
+      - traits.query-params-zip
   
   /append:
     get:
       displayName: Include Files to existing Zip using Java Class
+      is:
+      - traits.query-params-zip
+      - traits.query-params-files
   
   /entries:
     get:
