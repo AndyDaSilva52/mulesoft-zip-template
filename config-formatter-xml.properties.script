@@ -1,0 +1,8 @@
+
+maxLineLength=120
+splitMultiAttrs=true
+tabInsteadOfSpaces=false
+tabWidth=2
+wellFormedValidation=WARN
+wrapLongLines=true
+deleteBlankLines=false
