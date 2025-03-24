@@ -1,32 +1,33 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <mule
-	xmlns:validation="http://www.mulesoft.org/schema/mule/validation"
-	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
-	xmlns:tracing="http://www.mulesoft.org/schema/mule/tracing"
-	xmlns:file="http://www.mulesoft.org/schema/mule/file"
-	xmlns="http://www.mulesoft.org/schema/mule/core"
-	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+  xmlns:validation="http://www.mulesoft.org/schema/mule/validation"
+  xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+  xmlns:tracing="http://www.mulesoft.org/schema/mule/tracing"
+  xmlns:file="http://www.mulesoft.org/schema/mule/file"
+  xmlns="http://www.mulesoft.org/schema/mule/core"
+  xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
 http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd
 http://www.mulesoft.org/schema/mule/tracing http://www.mulesoft.org/schema/mule/tracing/current/mule-tracing.xsd
 http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
 http://www.mulesoft.org/schema/mule/validation http://www.mulesoft.org/schema/mule/validation/current/mule-validation.xsd">
 
 
-	<sub-flow
-		name="api-zip-file-mule-home:search-subflow"
-		doc:id="8883655b-1e69-415e-b497-bb97050855d0">
-		
-<!-- [STUDIO:"Doc:"]		<logger level="INFO" doc:name="Doc:" doc:id="af806145-3a86-4973-a97b-0a13df375c44" /> [STUDIO] -->
+  <sub-flow
+    name="api-zip-file-mule-home:search-subflow"
+    doc:id="8883655b-1e69-415e-b497-bb97050855d0">
+
+    <!-- [STUDIO:"Doc:"]		<logger level="INFO" doc:name="Doc:" doc:id="af806145-3a86-4973-a97b-0a13df375c44" /> [STUDIO] -->
 
 
-		<ee:transform
-			doc:name="DW File Matching Rules"
-			doc:id="50d02ebd-b39d-4e98-ad15-3e9a26738038">
-			<ee:message>
-				<ee:set-payload><![CDATA[%dw 2.0
+    <ee:transform
+      doc:name="DW File Matching Rules"
+      doc:id="50d02ebd-b39d-4e98-ad15-3e9a26738038">
+      <ee:message>
+        <ee:set-payload>
+          <![CDATA[%dw 2.0
 output application/java
 ---
 ({
@@ -50,39 +51,40 @@ output application/java
 	class : "org.mule.extension.file.api.LocalFileMatcher"
 }) filterObject((value, key, idx) -> !((value) is Null) )
 ]]></ee:set-payload>
-			</ee:message>
-		</ee:transform>
-		<file:list
-			doc:name="List using cWorkingDirectory ( resources/data/* )"
-			doc:id="464dc405-e6a7-497b-81b5-69221118bbb9"
-			config-ref="File_Config_Mule_Home_cFileWorkingDirectory"
-			directoryPath='#[attributes.queryParams.path default ""]'
-			recursive="#[ attributes.queryParams.recursive default true ]"
-			matcher="#[payload]">
-		</file:list>
-		<logger
-			level="INFO"
-			doc:name="log server.timeZone getDisplayName()"
-			doc:id="7923693c-ec84-4b75-afe7-f8d940b51448"
-			message="#[Java::invoke('java.util.TimeZone', 'getDisplayName()', server.timeZone, {})]"/>
+      </ee:message>
+    </ee:transform>
+    <file:list
+      doc:name="List using cWorkingDirectory ( resources/data/* )"
+      doc:id="464dc405-e6a7-497b-81b5-69221118bbb9"
+      config-ref="File_Config_Mule_Home_cFileWorkingDirectory"
+      directoryPath='#[attributes.queryParams.path default ""]'
+      recursive="#[ attributes.queryParams.recursive default true ]"
+      matcher="#[payload]">
+    </file:list>
+    <logger
+      level="INFO"
+      doc:name="log server.timeZone getDisplayName()"
+      doc:id="7923693c-ec84-4b75-afe7-f8d940b51448"
+      message="#[Java::invoke('java.util.TimeZone', 'getDisplayName()', server.timeZone, {})]" />
 
-		<logger
-			level="INFO"
-			doc:name="log server.timeZone 	getID()"
-			doc:id="85417f76-1d29-4e81-8aec-aab557d3d5a5"
-			message="#[Java::invoke('java.util.TimeZone', 'getID()', server.timeZone, {})]"/>
-		<validation:is-not-empty-collection
-			doc:name="Is not empty collection ( Error Map To APP:NO_CONTENT )"
-			doc:id="dc6f1971-314a-4870-a702-f8e03fb312ba">
-			<error-mapping
-				sourceType="VALIDATION:EMPTY_COLLECTION"
-				targetType="APP:NO_CONTENT"/>
-		</validation:is-not-empty-collection>
-		<ee:transform
-			doc:name="payload /dw"
-			doc:id="872100fa-1912-4106-a1db-56b9e4f74662">
-			<ee:message>
-				<ee:set-payload><![CDATA[%dw 2.0
+    <logger
+      level="INFO"
+      doc:name="log server.timeZone 	getID()"
+      doc:id="85417f76-1d29-4e81-8aec-aab557d3d5a5"
+      message="#[Java::invoke('java.util.TimeZone', 'getID()', server.timeZone, {})]" />
+    <validation:is-not-empty-collection
+      doc:name="Is not empty collection ( Error Map To APP:NO_CONTENT )"
+      doc:id="dc6f1971-314a-4870-a702-f8e03fb312ba">
+      <error-mapping
+        sourceType="VALIDATION:EMPTY_COLLECTION"
+        targetType="APP:NO_CONTENT" />
+    </validation:is-not-empty-collection>
+    <ee:transform
+      doc:name="payload /dw"
+      doc:id="872100fa-1912-4106-a1db-56b9e4f74662">
+      <ee:message>
+        <ee:set-payload>
+          <![CDATA[%dw 2.0
 output application/dw
 
 import toDateTime from dw::util::Coercions
@@ -115,7 +117,7 @@ payload.*attributes map ((item, index) -> {
 	size: item.size
 }) /** TODO: orderBy */
 ]]></ee:set-payload>
-			</ee:message>
-		</ee:transform>
-	</sub-flow>
+      </ee:message>
+    </ee:transform>
+  </sub-flow>
 </mule>

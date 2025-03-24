@@ -20,155 +20,153 @@ import net.lingala.zip4j.progress.ProgressMonitor;
 
 public class ZipUtils {
 
-	private ZipUtils() {
-		throw new IllegalStateException("Utility class");
-	}
+  private ZipUtils() {
+    throw new IllegalStateException("Utility class");
+  }
 
-	/**
-	 * A constants for buffer size used to read/write data
-	 */
-	private static final int BUFFER_SIZE = 4096; // parameter
+  /**
+   * A constants for buffer size used to read/write data
+   */
+  private static final int BUFFER_SIZE = 4096; // parameter
 
-	private static Logger logger = Logger.getLogger(ZipUtils.class.getName());
+  private static Logger logger = Logger.getLogger(ZipUtils.class.getName());
 
-	public static void addFiles(String zipPath, String[] files) throws IOException {
+  public static void addFiles(String zipPath, String[] files) throws IOException {
 
-		List<File> listFiles = new ArrayList<>();
-		for (int i = 0; i < files.length; i++) {
-			listFiles.add(new File(files[i]));
-		}
+    List<File> listFiles = new ArrayList<>();
+    for (int i = 0; i < files.length; i++) {
+      listFiles.add(new File(files[i]));
+    }
 
-		try (ZipFile zipFile = new ZipFile(zipPath)) {
-			zipFile.setRunInThread(true);
+    try (ZipFile zipFile = new ZipFile(zipPath)) {
+      zipFile.setRunInThread(true);
 
-			zipFile.addFiles(listFiles);
-		}
+      zipFile.addFiles(listFiles);
+    }
 
-	}
+  }
 
-	public static void addFilesWithStream(String zipPath, String[] files) throws IOException {
+  public static void addFilesWithStream(String zipPath, String[] files) throws IOException {
 
-		byte[] buff = new byte[BUFFER_SIZE];
-		int readLen;
+    byte[] buff = new byte[BUFFER_SIZE];
+    int readLen;
 
-		File outputZipFile = new File(zipPath);
+    File outputZipFile = new File(zipPath);
 
-		List<File> filesToAdd = new ArrayList<>();
-		for (int i = 0; i < files.length; i++) {
-			filesToAdd.add(new File(files[i]));
-		}
+    List<File> filesToAdd = new ArrayList<>();
+    for (int i = 0; i < files.length; i++) {
+      filesToAdd.add(new File(files[i]));
+    }
 
-		try (ZipOutputStream zos = initializeZipOutputStream(outputZipFile)) {
+    try (ZipOutputStream zos = initializeZipOutputStream(outputZipFile)) {
 
-			for (File fileToAdd : filesToAdd) {
-				zos.putNextEntry(new ZipEntry(fileToAdd.getName()));
+      for (File fileToAdd : filesToAdd) {
+        zos.putNextEntry(new ZipEntry(fileToAdd.getName()));
 
-				try (InputStream inputStream = new FileInputStream(fileToAdd)) {
-					while ((readLen = inputStream.read(buff)) != -1) {
-						zos.write(buff, 0, readLen);
-					}
-				}
-				zos.closeEntry();
-			}
-		}
-	}
+        try (InputStream inputStream = new FileInputStream(fileToAdd)) {
+          while ((readLen = inputStream.read(buff)) != -1) {
+            zos.write(buff, 0, readLen);
+          }
+        }
+        zos.closeEntry();
+      }
+    }
+  }
 
-	private static ZipOutputStream initializeZipOutputStream(File outputZipFile) throws IOException {
+  private static ZipOutputStream initializeZipOutputStream(File outputZipFile) throws IOException {
 
-		FileOutputStream fos = new FileOutputStream(outputZipFile);
+    FileOutputStream fos = new FileOutputStream(outputZipFile);
 
-		return new ZipOutputStream(fos);
-	}
-
-
+    return new ZipOutputStream(fos);
+  }
 
 
-	
-	public static void extract(String zipPath, String outputFolder) throws IOException {
 
-		try (ZipFile zipFile = new ZipFile(zipPath)) {
-			zipFile.setRunInThread(true);
+  public static void extract(String zipPath, String outputFolder) throws IOException {
 
-			zipFile.extractAll(outputFolder);
-		}
+    try (ZipFile zipFile = new ZipFile(zipPath)) {
+      zipFile.setRunInThread(true);
 
-	}
+      zipFile.extractAll(outputFolder);
+    }
 
-	public void extractWithStream(String zipPath) throws IOException {
-		File zipFile = new File(zipPath);
+  }
 
-		ZipEntry zipEntry;
-		int readLen;
-		byte[] readBuffer = new byte[4096];
+  public void extractWithStream(String zipPath) throws IOException {
+    File zipFile = new File(zipPath);
 
-		InputStream inputStream = new FileInputStream(zipFile);
+    ZipEntry zipEntry;
+    int readLen;
+    byte[] readBuffer = new byte[4096];
 
-		try (ZipInputStream zipInputStream = new ZipInputStream(inputStream)) {
+    InputStream inputStream = new FileInputStream(zipFile);
 
-			while ((zipEntry = zipInputStream.getNextEntry()) != null) {
-				File extractedFile = new File(zipEntry.getName());
+    try (ZipInputStream zipInputStream = new ZipInputStream(inputStream)) {
 
-				try (OutputStream outputStream = new FileOutputStream(extractedFile)) {
-					while ((readLen = zipInputStream.read(readBuffer)) != -1) {
-						outputStream.write(readBuffer, 0, readLen);
-					}
-				}
-			}
-		}
+      while ((zipEntry = zipInputStream.getNextEntry()) != null) {
+        File extractedFile = new File(zipEntry.getName());
 
-	}
+        try (OutputStream outputStream = new FileOutputStream(extractedFile)) {
+          while ((readLen = zipInputStream.read(readBuffer)) != -1) {
+            outputStream.write(readBuffer, 0, readLen);
+          }
+        }
+      }
+    }
 
-	public static Iterable<FileHeader> getEntries(String zipPath) throws IOException {
+  }
 
-		//List<String> filesList = new ArrayList<>();
+  public static Iterable<FileHeader> getEntries(String zipPath) throws IOException {
 
-		try (ZipFile zipFile = new ZipFile(zipPath)) {
+    // List<String> filesList = new ArrayList<>();
 
-			zipFile.getFileHeaders();
-			//.stream().forEach(fileHeader -> filesList.add(fileHeader.getFileName()));
-			return zipFile.getFileHeaders();
-		}
+    try (ZipFile zipFile = new ZipFile(zipPath)) {
 
-		
-	}
+      zipFile.getFileHeaders();
+      // .stream().forEach(fileHeader -> filesList.add(fileHeader.getFileName()));
+      return zipFile.getFileHeaders();
+    }
 
-	/**
-	 * 
-	 */
-	public static List<String> getZipFileList(String file) {
 
-		File zip = new File(file);
+  }
 
-		return getZipFileList(zip);
+  /**
+   * 
+   */
+  public static List<String> getZipFileList(String file) {
 
-	}
+    File zip = new File(file);
 
-	private static List<String> getZipFileList(File file) {
+    return getZipFileList(zip);
 
-		List<String> filesList = new ArrayList<>();
+  }
 
-		try (java.util.zip.ZipFile zipFile = new java.util.zip.ZipFile(file)) {
+  private static List<String> getZipFileList(File file) {
 
-			Enumeration<? extends ZipEntry> entries = zipFile.entries();
+    List<String> filesList = new ArrayList<>();
 
-			while (entries.hasMoreElements()) {
-				ZipEntry entry = entries.nextElement();
-				filesList.add(entry.getName());
+    try (java.util.zip.ZipFile zipFile = new java.util.zip.ZipFile(file)) {
 
-				logger.log(Level.INFO, "ZipEntry: {0} ", entry.getName());
-			}
+      Enumeration<? extends ZipEntry> entries = zipFile.entries();
 
-		} catch (Exception e) {
-			logger.log(Level.SEVERE, e.getMessage());
-		}
+      while (entries.hasMoreElements()) {
+        ZipEntry entry = entries.nextElement();
+        filesList.add(entry.getName());
 
-		return filesList;
-	}
-	
-	public static ProgressMonitor getProgress(String zipPath) throws IOException {
-		try (ZipFile zipFile = new ZipFile(zipPath)) {
-			// return object with FileName, CurrentTask, Result and PercentageDone
-			return zipFile.getProgressMonitor();
-		}
-	}
+        logger.log(Level.INFO, "ZipEntry: {0} ", entry.getName());
+      }
+
+    } catch (Exception e) {
+      logger.log(Level.SEVERE, e.getMessage());
+    }
+
+    return filesList;
+  }
+
+  public static ProgressMonitor getProgress(String zipPath) throws IOException {
+    try (ZipFile zipFile = new ZipFile(zipPath)) {
+      // return object with FileName, CurrentTask, Result and PercentageDone
+      return zipFile.getProgressMonitor();
+    }
+  }
 }
