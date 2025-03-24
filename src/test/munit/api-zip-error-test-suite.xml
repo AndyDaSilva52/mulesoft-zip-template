@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:munit="http://www.mulesoft.org/schema/mule/munit" xmlns:munit-tools="http://www.mulesoft.org/schema/mule/munit-tools"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xsi:schemaLocation="
+		http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+		http://www.mulesoft.org/schema/mule/munit http://www.mulesoft.org/schema/mule/munit/current/mule-munit.xsd
+		http://www.mulesoft.org/schema/mule/munit-tools  http://www.mulesoft.org/schema/mule/munit-tools/current/mule-munit-tools.xsd">
+	<munit:config name="api-zip-error-test-suite.xml" />
+	<munit:test name="api-zip-error-test-suiteTest" doc:id="3f4e4f4c-f19d-433e-8bc1-3a5dec2b66ba" expectedErrorType="MULE:UNKNOW">
+		<munit:behavior>
+			<munit-tools:mock-when doc:name="Mock when APIkit Router (api-zip-config)" doc:id="bb3d7fc4-434f-4dcd-9c2d-63358124a998" processor="apikit:router">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="api-zip-config" attributeName="config-ref" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-call flow="api-zip-error-test-suite:raise-MULE:EXPRESSION-flow" />
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow Ref api-zip-main" doc:id="f6cbc892-ac9d-464e-8971-27c77478c924" name="api-zip-main"/>
+		</munit:execution>
+	</munit:test>
+	<flow name="api-zip-error-test-suite:raise-MULE:EXPRESSION-flow" doc:id="0aee292d-d7c9-4057-a2fd-07e1fc50f986" >
+		<raise-error doc:name="Raise error FILE:RETRY_EXHAUSTED" doc:id="ae485de5-71ef-4230-af7a-f5788c41131a" type="FILE:RETRY_EXHAUSTED"/>
+		<error-handler ref="api-zip-error-handler-global" />
+	</flow>
+
+
+</mule>

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <mule
+	xmlns:validation="http://www.mulesoft.org/schema/mule/validation"
 	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
 	xmlns:tracing="http://www.mulesoft.org/schema/mule/tracing"
 	xmlns:file="http://www.mulesoft.org/schema/mule/file"
@@ -10,11 +11,12 @@
 	xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
 http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd
 http://www.mulesoft.org/schema/mule/tracing http://www.mulesoft.org/schema/mule/tracing/current/mule-tracing.xsd
-http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/validation http://www.mulesoft.org/schema/mule/validation/current/mule-validation.xsd">
 
 
 	<sub-flow
-		name="api-zip-file-mule-home-search-subflow"
+		name="api-zip-file-mule-home:search-subflow"
 		doc:id="8883655b-1e69-415e-b497-bb97050855d0">
 		
 <!-- [STUDIO:"Doc:"]		<logger level="INFO" doc:name="Doc:" doc:id="af806145-3a86-4973-a97b-0a13df375c44" /> [STUDIO] -->
@@ -69,7 +71,13 @@ output application/java
 			doc:name="log server.timeZone 	getID()"
 			doc:id="85417f76-1d29-4e81-8aec-aab557d3d5a5"
 			message="#[Java::invoke('java.util.TimeZone', 'getID()', server.timeZone, {})]"/>
-
+		<validation:is-not-empty-collection
+			doc:name="Is not empty collection ( Error Map To APP:NO_CONTENT )"
+			doc:id="dc6f1971-314a-4870-a702-f8e03fb312ba">
+			<error-mapping
+				sourceType="VALIDATION:EMPTY_COLLECTION"
+				targetType="APP:NO_CONTENT"/>
+		</validation:is-not-empty-collection>
 		<ee:transform
 			doc:name="payload /dw"
 			doc:id="872100fa-1912-4106-a1db-56b9e4f74662">

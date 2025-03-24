@@ -6,7 +6,8 @@
 	xmlns="http://www.mulesoft.org/schema/mule/core"
 	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+	xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core 
+http://www.mulesoft.org/schema/mule/core/current/mule.xsd
 http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
 http://www.mulesoft.org/schema/mule/java http://www.mulesoft.org/schema/mule/java/current/mule-java.xsd">
 
@@ -23,8 +24,12 @@ http://www.mulesoft.org/schema/mule/java http://www.mulesoft.org/schema/mule/jav
 				<ee:set-variable variableName="zip"><![CDATA[%dw 2.0
 output application/java
 ---
-modules::app::cFileWorkingDirectory 
-	++ "/in/example.zip"
+modules::app::cFileWorkingDirectory ++
+(
+	attributes.queryParams.'zip' 
+		default "/data/in/example_01.zip"
+)
+
 ]]></ee:set-variable>
 			</ee:variables>
 		</ee:transform>
@@ -44,13 +49,28 @@ output application/java
 		<try
 			doc:name="Try"
 			doc:id="07251869-ce61-4823-a915-ce0bc0797f63">
-			<java:invoke-static
-				doc:name="Invoke static org.mulesoft.common.ZipUtility.getZipFileList(String file) &#10;&#10;  (getZipFileList(java.lang.String))"
-				doc:id="0cf07f1e-774f-4926-886c-f436be26aeeb"
-				class="org.mulesoft.common.ZipUtility"
-				method="getZipFileList(java.lang.String)">
-				<java:args><![CDATA[#[payload]]]></java:args>
-			</java:invoke-static>
+			<choice
+				doc:name="Choice"
+				doc:id="333de2e2-fd8d-44a8-97db-2b271f2e4285">
+				<when expression="#['getEntries' == attributes.queryParams.'route']">
+					<java:invoke-static
+						method="getEntries(java.lang.String)"
+						doc:name="Invoke static ZipUtility.getEntries(String file)"
+						doc:id="2875583d-1b2d-4d19-a11c-d995c29bc9ce"
+						class="template.ZipUtils">
+						<java:args><![CDATA[#[payload]]]></java:args>
+					</java:invoke-static>
+				</when>
+				<otherwise>
+					<java:invoke-static
+						doc:name="Invoke static ZipUtility.getZipFileList(String file)"
+						doc:id="0cf07f1e-774f-4926-886c-f436be26aeeb"
+						class="template.ZipUtils"
+						method="getZipFileList(java.lang.String)">
+						<java:args><![CDATA[#[payload]]]></java:args>
+					</java:invoke-static>
+				</otherwise>
+			</choice>
 
 			<error-handler>
 				<on-error-continue
@@ -59,18 +79,22 @@ output application/java
 					doc:name="On Error Continue"
 					doc:id="d19baa02-e96d-4399-9181-92d767364f27"
 					when="#[ Java::isCausedBy(error.cause, 'java.lang.IllegalArgumentException') ]">
-<!-- [STUDIO:"Raise error"]					<raise-error doc:name="Raise error" doc:id="4dde2410-40fd-42e2-8c93-069c6d5a5357" /> [STUDIO] -->
+<!-- [STUDIO:"Raise error"]					<raise-error
+						doc:name="Raise error"
+						doc:id="4dde2410-40fd-42e2-8c93-069c6d5a5357"/> [STUDIO] -->
 				</on-error-continue>
 			</error-handler>
 		</try>
-		
-<!-- [STUDIO:" TODO Caso não encontre o Arquivo, apresentar erro!"]		<logger level="INFO" doc:name=" TODO Caso não encontre o Arquivo, apresentar erro!" doc:id="2bb19f22-684c-4c94-9f18-e816d3fdd020" /> [STUDIO] -->
+<!-- [STUDIO:"TODO: If doesn't get the file, raise an error!"]		<logger
+			level="INFO"
+			doc:name="TODO: If doesn't get the file, raise an error!"
+			doc:id="2bb19f22-684c-4c94-9f18-e816d3fdd020"/> [STUDIO] -->
 		<ee:transform
-			doc:name="Set payload /json Response"
+			doc:name="Set payload /java Response"
 			doc:id="f0e4fbf1-9453-4b75-87da-2c84b6fa2fc7">
 			<ee:message>
 				<ee:set-payload><![CDATA[%dw 2.0
-output application/json
+output application/java
 
 import cleanPath from modules::app
 ---
@@ -90,54 +114,212 @@ import cleanPath from modules::app
 	<sub-flow
 		name="api-zip-compression-with-java-zip-subflow"
 		doc:id="7cd9b468-a8e6-4ed5-a387-6a73e256d83a">
+<!-- [STUDIO:"doc: Add files (append) if exists zip."]		<logger level="INFO" doc:name="doc: Add files (append) if exists zip." doc:id="1e6c4f77-ac96-46da-a359-94d45ef63608" /> [STUDIO] -->
+		<ee:transform
+			doc:name="Set var zip"
+			doc:id="5fb21217-04d6-4477-8def-1690dd902ace">
+			<ee:message/>
+			<ee:variables>
+				<ee:set-variable variableName="zip"><![CDATA[%dw 2.0
+output application/java
+
+var timestamp = (
+    now() as DateTime >> "America/Sao_Paulo"
+) as String { format: "uuuuMMddHHmmss"} 
+---
+modules::app::cFileWorkingDirectory ++
+(
+	attributes.queryParams.'zip'
+	default "out/example_$(timestamp).zip"
+) as String
+//modules::app::cFileWorkingDirectory ++ "/in/example.zip"
+]]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+		<choice
+			doc:name="Choice"
+			doc:id="49fd274d-848c-45b2-bec7-a519d8bb9e0a">
+			<when expression="#['progress' == attributes.queryParams.'route']">
+				<logger
+					level="INFO"
+					doc:name="Logger"
+					doc:id="7f6bb20b-ef5d-4f47-be89-82493195adca"/>
+			</when>
+			<otherwise>
+				<ee:transform
+					doc:name="Set payload /java - Args for Java Class"
+					doc:id="05cdae77-305c-4398-a465-65976748cd73">
+					<ee:message>
+						<ee:set-payload><![CDATA[%dw 2.0
+output application/java
+
+var files = (
+	attributes.queryParams.'files' splitBy  ","
+	default [ "in/data_example_01.csv", "in/data_example_02.csv" ]
+) as Array map ((item, index) -> 
+	modules::app::cFileWorkingDirectory ++ item
+)
+
+---
+{
+	zipPath: vars.zip, // destZipFile
+	files: files // files
+}
+
+]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+				<java:invoke-static
+					doc:name="Invoke static ZipUtility.addFiles(String zipFile, String[] files)"
+					doc:id="0ae4dc65-741c-4dce-a6a7-fd0377a6388d"
+					class="template.ZipUtils"
+					method="addFiles(java.lang.String,java.lang.String[])">
+					<java:args><![CDATA[#[payload]]]></java:args>
+				</java:invoke-static>
+			</otherwise>
+		</choice>
 		<ee:transform
 			doc:name="Set payload /java - Args for Java Class"
-			doc:id="05cdae77-305c-4398-a465-65976748cd73">
+			doc:id="1ce8a7c9-2cf3-4f48-9b84-dfe7893d1e4a">
 			<ee:message>
 				<ee:set-payload><![CDATA[%dw 2.0
 output application/java
 ---
 {
-	files: "", // files
-	destZipFile: "" // destZipFiles
-}]]></ee:set-payload>
+	zipPath: vars.zip
+}
+
+]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
 		<java:invoke-static
-			doc:name="Invoke static org.mulesoft.common.ZipUtility.zip(String[] files, String destZipFile) &#10;&#10; (zip(java.lang.String[],java.lang.String))"
-			doc:id="0ae4dc65-741c-4dce-a6a7-fd0377a6388d"
-			class="org.mulesoft.common.ZipUtility"
-			method="zip(java.lang.String[],java.lang.String)">
+			method="getProgress(java.lang.String)"
+			doc:name="Invoke static ZipUtils.getProgress(String zipPath)"
+			doc:id="21c6f54f-b421-4d0a-b7a0-d112d0ec35c0"
+			class="template.ZipUtils">
 			<java:args><![CDATA[#[payload]]]></java:args>
 		</java:invoke-static>
+		<ee:transform
+			doc:name="Set payload /java Response"
+			doc:id="a018c4f5-cc8c-4cc3-9f18-9da26be9e023">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/java
+
+import cleanPath from modules::app
+---
+{
+	transactionID: correlationId,
+	zipFile: cleanPath(vars.zip)
+	,progress: payload
+}
+]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
 	</sub-flow>
 	<sub-flow
 		name="api-zip-compression-with-java-append-subflow"
 		doc:id="e7cef1a6-cea4-4168-98dc-a11db8843e45">
+		<ee:transform
+			doc:name="Set var zip"
+			doc:id="820ecde4-3306-4a0c-9f5d-a6ac5919e7a3">
+			<ee:message/>
+			<ee:variables>
+				<ee:set-variable variableName="zip"><![CDATA[%dw 2.0
+output application/java
+
+var timestamp = (
+    now() as DateTime >> "America/Sao_Paulo"
+) as String { format: "uuuuMMddHHmmss"} 
+---
+modules::app::cFileWorkingDirectory ++
+(
+	attributes.queryParams.'zip'
+	default "out/example_$(timestamp).zip"
+) as String
+
+]]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
 		<ee:transform
 			doc:name="Set payload /java - Args for Java Class"
 			doc:id="95c65611-7aad-49b6-8b5f-e05025f01a6c">
 			<ee:message>
 				<ee:set-payload><![CDATA[%dw 2.0
 output application/java
+
+var timestamp = (
+    now() as DateTime >> "America/Sao_Paulo"
+) as String { format: "uuuuMMddHHmmss"} 
+
+var zipFile = (
+	attributes.queryParams.'zip'
+	default "data/out/example_$(timestamp).zip"
+) as String
+
+var files = (
+	attributes.queryParams.'files'
+	default [ "data_example_01.csv", "data_example_02.csv" ]
+) as Array
+
 ---
 {
-	zipFile: "", // zipFile
-	files: [""] // files [""]
-}]]></ee:set-payload>
+	zipPath: zipFile, // destZipFile
+	files: files // files
+}
+
+]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
 		<java:invoke-static
-			doc:name="Invoke static org.mulesoft.common.ZipUtility.addFilesToExisintgZip(String zipFile, String[] files) &#10;&#10; (addFilesToExisintgZip(java.lang.String,java.lang.String[]))"
+			doc:name="Invoke static ZipUtility.addFiles(String zipFile, String[] files)"
 			doc:id="8dc9f01b-4efc-41ad-bec6-a7f20263e46d"
-			class="org.mulesoft.common.ZipUtility"
-			method="addFilesToExistingZip(java.lang.String,java.lang.String[])">
+			class="template.ZipUtils"
+			method="addFiles(java.lang.String,java.lang.String[])">
 			<java:args><![CDATA[#[payload]]]></java:args>
 		</java:invoke-static>
+		<ee:transform
+			doc:name="Set payload /java Response"
+			doc:id="13bcca13-d6c0-4204-81da-02ab2ebfedd3">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/java
+
+import cleanPath from modules::app
+---
+{
+	transactionID: correlationId,
+	zipFile: cleanPath(vars.zip),
+	entries: payload
+}
+]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
 	</sub-flow>
 	<sub-flow
 		name="api-zip-compression-with-java-unzip-subflow"
 		doc:id="b7a83807-b046-450b-b026-49c7892ebfc9">
+		<ee:transform
+			doc:name="Set var zip"
+			doc:id="01a44aba-a740-4de1-bd7e-2832274fddfd">
+			<ee:message/>
+			<ee:variables>
+				<ee:set-variable variableName="zip"><![CDATA[%dw 2.0
+output application/java
+
+var timestamp = (
+    now() as DateTime >> "America/Sao_Paulo"
+) as String { format: "uuuuMMddHHmmss"} 
+---
+modules::app::cFileWorkingDirectory ++
+(
+	attributes.queryParams.'zip'
+	default "out/example_$(timestamp).zip"
+) as String
+
+]]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
 		<ee:transform
 			doc:name="Set payload /java - Args for Java Class"
 			doc:id="983d4264-217e-4d0b-8b6b-9d166fd5cf2c">
@@ -146,17 +328,34 @@ output application/java
 output application/java
 ---
 {
-	zipFile: "", // zipFile
+	zipPath: "", // zipFile
 	outputFolder: "" // outputFolder
 }]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
 		<java:invoke-static
-			doc:name="Invoke static org.mulesoft.common.ZipUtility.unZipFiles(String zipFile, String outputFolder) &#10;&#10; (unZipFiles(java.lang.String,java.lang.String))"
+			doc:name="Invoke static ZipUtility.unZipFiles(String zipFile, String outputFolder)"
 			doc:id="4f769440-2a40-4e76-8937-5c5d11759d7c"
-			class="org.mulesoft.common.ZipUtility"
-			method="unZipFiles(java.lang.String,java.lang.String)">
+			class="template.ZipUtils"
+			method="extract(java.lang.String,java.lang.String)">
 			<java:args><![CDATA[#[payload]]]></java:args>
 		</java:invoke-static>
+		<ee:transform
+			doc:name="Set payload /java Response"
+			doc:id="b2012467-4a7f-442e-b4df-90e927d90d8d">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/java
+
+import cleanPath from modules::app
+---
+{
+	transactionID: correlationId,
+	zipFile: cleanPath(vars.zip),
+	entries: payload
+}
+]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
 	</sub-flow>
 </mule>
