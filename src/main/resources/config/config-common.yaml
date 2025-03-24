@@ -3,7 +3,13 @@ api:
   version: "1.0.0"
   logger:
     package: "org.mulesoft.templates"
-    
+
+project: # Replaced by maven resource filter
+  groupId:    "${project.groupId}"
+  artifactId: "${project.artifactId}"
+  version:    "${project.version}"
+  packaging:  "${project.packaging}"
+
 status:
   key: "JOB_STATUS"
   runnning: "RUNNING"
